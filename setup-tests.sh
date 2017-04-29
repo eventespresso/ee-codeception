@@ -13,10 +13,6 @@ function install_wp_and_ee {
     rm -rf $WP_SITE_PATH
     mkdir $WP_SITE_PATH
     cd "$WP_SITE_PATH"
-    cat > .gitignore << EOF
-# Ignore all WP
-/*
-EOF
     wp core download --force
     wp core config --dbname="$DB_NAME" --dbuser="$DB_USER" --dbpass="$DB_PASS" --extra-php <<PHP
     define( 'WP_DEBUG', true );
@@ -24,12 +20,17 @@ EOF
     define( 'WP_DEBUG_LOG', true );
 PHP
     echo "Creating WordPress test database..."
-    wp db drop -yes
+    wp db drop --yes
     wp db create
     wp core install --url="$WP_SITE_URL" --title="Acceptance Testing Site" --admin_user="admin" --admin_password="admin" --admin_email="admin@example.com"
 
     ##Install EE core
-    wp plugin install https://github.com/eventespresso/event-espresso-core --force
+    wp plugin install https://github.com/eventespresso/event-espresso-core/archive/$EE_BRANCH.zip --force
+
+    ##Install Add-on package if present
+    if [ -n "$ADDON_PACKAGE" ]; then
+        wp plugin install https://github.com/eventespresso/$ADDON_PACKAGE/archive/master.zip --force
+    fi
 }
 
 #This takes care of copying any tests from the plugin for codeception tests

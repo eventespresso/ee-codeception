@@ -1,35 +1,30 @@
 actor: Tester
 paths:
-    tests: tests
-    log: tests/_output
-    data: tests/_data
-    helpers: tests/_support
+  tests: tests
+  log: tests/_output
+  data: tests/_data
+  helpers: tests/_support
 settings:
-    bootstrap: _bootstrap.php
-    colors: true
-    memory_limit: 1024M
+  bootstrap: _bootstrap.php
+  colors: true
+  memory_limit: 1024M
 modules:
-    config:
-      WPBrowser:
-        url: 'http://127.0.0.1:8888'
-        adminUsername: admin
-        adminPassword: admin
-        adminUrl: /wp-admin
-      WPDb:
-        dsn: 'mysql:host=localhost;dbname=wp_acceptance_tests'
-        user: root
-        password: root
-        dump: tests/_data/dump.sql
-        populate: false
-        cleanup: false
-        url: 'http://127.0.0.1:8888'
-        tablePrefix: wp_
-      WPWebDriver:
-        url: 'http://127.0.0.1:8888'
-        browser: phantomjs
-        port: 4444
-        restart: true
-        wait: 2
-        adminusername: admin
-        adminPassword: admin
-        adminUrl: /wp-admin
+  config:
+    WPDb:
+      dsn: 'mysql:host=localhost;dbname=wp_acceptance_tests'
+      user: root
+      password: root
+      dump: tests/_data/dump.sql
+      populate: false
+      cleanup: false
+      url: 'http://127.0.0.1:8888'
+      tablePrefix: wp_
+    WPWebDriver:
+      url: 'http://127.0.0.1:8888'
+      browser: phantomjs
+      port: 4444
+      restart: true
+      wait: 2
+      adminUsername: admin
+      adminPassword: admin
+      adminUrl: /wp-admin

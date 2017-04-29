@@ -12,7 +12,7 @@ function parse_yaml {
         -e "s|^\($s\)\($w\)$s:$s[\"']\(.*\)[\"']$s\$|\1$fs\2$fs\3|p" \
         -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p"  $1 |
    awk -F$fs '{
-      indent = length($1)/4;
+      indent = length($1)/2;
       vname[indent] = $2;
       for (i in vname) {if (i > indent) {delete vname[i]}}
       if (length($3) > 0) {
@@ -23,10 +23,9 @@ function parse_yaml {
 }
 
 eval $(parse_yaml ./codeception.yml)
-
 ##define some constants
 DB_HOST=${DB_HOST-localhost}
-DB_USER=${DB_USER-$modules_config_WPDB_user}
+DB_USER=${DB_USER-$modules_config_WPDb_user}
 DB_PASS=${DB_PASS-$modules_config_WPDb_password}
 PROJECT_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DB_NAME=$modules_config_WPDb_dsn
@@ -34,3 +33,13 @@ DB_NAME=${DB_NAME#*dbname=}
 WP_SITE_URL=$modules_config_WPBrowser_url
 SERVER_PATH="$PROJECT_ROOT/tests/tmp"
 WP_SITE_PATH="$SERVER_PATH/wp"
+
+##EE core constants
+if [ -z "$EE_BRANCH" ]; then
+    EE_BRANCH="master"
+fi
+
+#Tags override branches.
+if [ -n "$EE_TAG" ]; then
+    EE_BRANCH=$EE_TAG
+fi
