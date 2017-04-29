@@ -27,4 +27,4 @@ modules:
       wait: 2
       adminUsername: admin
       adminPassword: admin
-      adminUrl: /wp-admin
+      adminPath: /wp-admin
