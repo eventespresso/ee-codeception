@@ -29,7 +29,7 @@ PHP
     wp core install --url="$WP_SITE_URL" --title="Acceptance Testing Site" --admin_user="admin" --admin_password="admin" --admin_email="admin@example.com"
 
     ##Install EE core
-    wp plugin install https://github.com/eventespresso/event-espresso-core --activate --force
+    wp plugin install https://github.com/eventespresso/event-espresso-core --force
 }
 
 #This takes care of copying any tests from the plugin for codeception tests
