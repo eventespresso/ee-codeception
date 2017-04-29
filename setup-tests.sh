@@ -36,6 +36,9 @@ PHP
 #This takes care of copying any tests from the plugin for codeception tests
 function install_codeception_tests_from_plugin {
     cp $WP_SITE_PATH/wp-content/plugins/event-espresso-core/acceptance_tests/* $PROJECT_ROOT/acceptance/
+    if [ -n "$ADDON_PACKAGE" ]; then
+        cp $WP_SITE_PATH/wp-content/plugins/$ADDON_PACKAGE/acceptance_tests/* $PROJECT_ROOT/acceptance/
+    fi
 }
 
 
