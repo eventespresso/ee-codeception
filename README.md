@@ -1,6 +1,6 @@
 # EE Codeception Test Suite
 
-> Note: this is still being developed so its likely it will NOT work in its current state.
+> More documentation in the works.
 
 This is the codeception test suite for EE that does the following:
 
