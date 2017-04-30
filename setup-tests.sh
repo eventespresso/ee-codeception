@@ -21,6 +21,7 @@ install_wp_and_ee() {
     define( 'WP_DEBUG_DISPLAY', false );
     define( 'WP_DEBUG_LOG', true );
 PHP
+    setupWPdb
     ##Install EE core
     sh ${WPCLIPATH}wp plugin install https://github.com/eventespresso/event-espresso-core/archive/$EE_BRANCH.zip --force
 
@@ -57,6 +58,9 @@ if [ -n "$START_FROM_SCRATCH" ] || [ ! -d "$WP_SITE_PATH/wp-admin" ]; then
     echo "Building Acceptance Tests with Codeception..."
     vendor/bin/codecept build
 fi
-#we ALWAYS drop and recreate/install the site on new runs
-setupWPdb
-cd $PROJECT_ROOT
+#we ALWAYS drop and recreate/install the db on repeated runs.  But if it's already been run
+#then we leave alone.
+if [ -z "$START_FROM_SCRATCH" ]; then
+    setupWPdb
+    cd $PROJECT_ROOT
+fi
