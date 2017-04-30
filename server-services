@@ -7,7 +7,10 @@ if [ -z $WP_PATH ]; then
     WP_PATH=${ROOT}/tests/tmp/wp
 fi
 
-
+## Create the wp directory if it doesn't exist for the webserver to point to.
+if [ ! -d $WP_PATH ]; then
+    mkdir $WP_PATH;
+fi
 
 # default hostname
 HOST=127.0.0.1
