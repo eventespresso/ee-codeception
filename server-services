@@ -101,7 +101,7 @@ start_server () {
     php -S "$HOST":"$PORT" -t $WP_SITE_PATH >> "$LOGFILE" 2>&1 &
     echo "$HOST":"$PORT":$! > $PIDFILE
     #Start up the webdriver
-    echo "Started PhantomJS webdriver"
+    echo "${GREEN}Started PhantomJS webdriver"
     phantomjs --webdriver=4444 >> "$LOGFILE" 2>&1 &
     echo "$PORT":$! > $PHANTOMPIDFILE
     return 0
