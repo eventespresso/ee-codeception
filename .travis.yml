@@ -23,7 +23,7 @@ matrix:
 
 before_script:
   # start services (webserver and webdriver)
-  - ./server-services start
+  - source server-services start
   # run composer to install what's needed
   - composer install --prefer-source
   # setup tests
