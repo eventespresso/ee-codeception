@@ -8,23 +8,25 @@ fi
 
 mkdir -p $SERVER_PATH
 
+WPCLIPATH=${PROJECT_ROOT}/vendor/bin/
+
 install_wp_and_ee() {
     echo "Creating WordPress test site..."
     rm -rf $WP_SITE_PATH
     mkdir $WP_SITE_PATH
     cd "$WP_SITE_PATH"
-    wp core download --force
-    wp core config --dbname="$DB_NAME" --dbuser="$DB_USER" --dbpass="$DB_PASS" --extra-php <<PHP
+    sh ${WPCLIPATH}wp core download --force
+    sh ${WPCLIPATH}wp core config --dbname="$DB_NAME" --dbuser="$DB_USER" --dbpass="$DB_PASS" --extra-php <<PHP
     define( 'WP_DEBUG', true );
     define( 'WP_DEBUG_DISPLAY', false );
     define( 'WP_DEBUG_LOG', true );
 PHP
     ##Install EE core
-    wp plugin install https://github.com/eventespresso/event-espresso-core/archive/$EE_BRANCH.zip --force
+    sh ${WPCLIPATH}wp plugin install https://github.com/eventespresso/event-espresso-core/archive/$EE_BRANCH.zip --force
 
     ##Install Add-on package if present
     if [ -n "$ADDON_PACKAGE" ]; then
-        wp plugin install https://github.com/eventespresso/$ADDON_PACKAGE/archive/master.zip --force
+        sh ${WPCLIPATH}wp plugin install https://github.com/eventespresso/$ADDON_PACKAGE/archive/master.zip --force
     fi
 }
 
@@ -32,9 +34,9 @@ PHP
 setupWPdb() {
     cd $WP_SITE_PATH
     echo "Creating WordPress test database..."
-    wp db drop --yes
-    wp db create
-    wp core install --url="$WP_SITE_URL" --title="Acceptance Testing Site" --admin_user="admin" --admin_password="admin" --admin_email="admin@example.com"
+    sh ${WPCLIPATH}wp db drop --yes
+    sh ${WPCLIPATH}wp db create
+    sh ${WPCLIPATH}wp core install --url="$WP_SITE_URL" --title="Acceptance Testing Site" --admin_user="admin" --admin_password="admin" --admin_email="admin@example.com"
 }
 
 #This takes care of copying any tests from the plugin for codeception tests
@@ -53,7 +55,7 @@ if [ -n "$START_FROM_SCRATCH" ] || [ ! -d "$WP_SITE_PATH/wp-admin" ]; then
     cd $PROJECT_ROOT
 
     echo "Building Acceptance Tests with Codeception..."
-    php ./vendor/bin/codecept build
+    vendor/bin/codecept build
 fi
 #we ALWAYS drop and recreate/install the site on new runs
 setupWPdb
