@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 # check for codeception.yml
-if [ ! -f ./codeception.yml ]; then
-    echo 'codeception.yml missing'
-    exit;
+CODECEPTCONFIG="codeception.yml"
+if [ ! -f ./${CODECEPTCONFIG} ]; then
+    CODECEPTCONFIG="codeception.dist.yml"
+    if [ ! -f ./${CODECEPTCONFIG} ]; then
+        echo 'codeception.yml missing'
+        exit;
+    fi
 fi
 
 function parse_yaml {
@@ -22,7 +26,7 @@ function parse_yaml {
    }'
 }
 
-eval $(parse_yaml ./codeception.yml)
+eval $(parse_yaml ./${CODECEPTCONFIG})
 ##define some constants
 DB_HOST=${DB_HOST-localhost}
 DB_USER=${DB_USER-$modules_config_WPDb_user}
