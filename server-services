@@ -17,7 +17,7 @@ PORT=8888
 # script name
 NAME=${0##*/}
 
-usage () {
+usage() {
   cat <<EOF
   $NAME (PHP built-in web server manager) Version 0.1.0
   PHP builtin server manager on port $PORT
@@ -64,6 +64,8 @@ fi
 PIDFILE="$NAME".pid
 PHANTOMPIDFILE="$NAME"-phantom.pid
 LOGFILE="$NAME".log
+PHPNAME="php webserver"
+PJSNAME="phantomjs"
 
 validate_server () {
   which php &> /dev/null
@@ -95,7 +97,7 @@ start_server () {
     echo if you are sure no server is running just remove "$PIDFILE" manually and start again
     return 1
   else
-    printf "${GREEN}"$NAME" started on $HOST:$PORT${NORMAL}\n"
+    printf "${GREEN}$PHPNAME started on $HOST:$PORT${NORMAL} for $WP_SITE_PATH\n"
     php -S "$HOST":"$PORT" -t $WP_SITE_PATH >> "$LOGFILE" 2>&1 &
     echo "$HOST":"$PORT":$! > $PIDFILE
     #Start up the webdriver
@@ -131,35 +133,33 @@ stop_server () {
   if read_pidfile; then
     kill -9 "$PID"
     rm -f "$PIDFILE"
-    printf "${GREEN}"$NAME" stopped!${NORMAL}\n"
-    return 0
+    printf "${GREEN}$PHPNAME stopped!${NORMAL}\n"
   else
-    printf "${YELLOW}"$NAME" is not running!${NORMAL}\n"
-    return 1
+    printf "${YELLOW}$PHPNAME is not running!${NORMAL}\n"
   fi
 
   #phantomjs
   if read_phantom_pidfile; then
     kill -9 "$PID"
     rm -f "$PHANTOMPIDFILE"
-    printf "${GREEN}"$NAME" stopped!${NORMAL}\n"
+    printf "${GREEN}$PJSNAME stopped!${NORMAL}\n"
     return 0
   else
-    printf "${YELLOW}"$NAME" is not running!${NORMAL}\n"
+    printf "${YELLOW}$PJSNAME is not running!${NORMAL}\n"
     return 1
   fi
 }
 
 status_server() {
   if read_pidfile && kill -0 "$PID" ; then
-    printf "${BLUE}"$NAME" is running on ${HOST}:${PORT}${NORMAL}\n"
+    printf "${BLUE}$PHPNAME is running on ${HOST}:${PORT}${NORMAL}\n"
   else
-    printf "${YELLOW}"$NAME" is not running!${NORMAL}\n"
+    printf "${YELLOW}$PHPNAME is not running!${NORMAL}\n"
   fi
   if read_phantom_pidfile && kill -0 "$PID" ; then
-    printf "${BLUE}"$NAME" is running on ${PORT}${NORMAL}\n"
+    printf "${BLUE}$PJSNAME is running on ${PORT}${NORMAL}\n"
   else
-    printf "${YELLOW}"$NAME" is not running!${NORMAL}\n"
+    printf "${YELLOW}$PJSNAME is not running!${NORMAL}\n"
   fi
 }
 
