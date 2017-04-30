@@ -7,3 +7,4 @@ server-services.pid
 tests/_output
 #Acceptance tests should only be pulled in from the repositories containing them.
 tests/acceptance
+codeception.yml
