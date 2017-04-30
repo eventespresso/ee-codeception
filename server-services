@@ -2,11 +2,12 @@
 ## Code inspired/copied from https://github.com/cubny/php-built-in-server-manager
 
 ## get some environment variables if they haven't been set yet.
-if [ -z $WP_SITE_PATH ]; then
-    set -o allexport
-    source set-environment-variables.sh
-    set +o allexport
+if [ -z $WP_PATH ]; then
+    ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    WP_PATH=${ROOT}/tests/tmp/wp
 fi
+
+
 
 # default hostname
 HOST=127.0.0.1
@@ -97,8 +98,8 @@ start_server () {
     echo if you are sure no server is running just remove "$PIDFILE" manually and start again
     return 1
   else
-    printf "${GREEN}$PHPNAME started on $HOST:$PORT${NORMAL} for $WP_SITE_PATH\n"
-    php -S "$HOST":"$PORT" -t $WP_SITE_PATH >> "$LOGFILE" 2>&1 &
+    printf "${GREEN}$PHPNAME started on $HOST:$PORT${NORMAL} for $WP_PATH\n"
+    php -S "$HOST":"$PORT" -t $WP_PATH >> "$LOGFILE" 2>&1 &
     echo "$HOST":"$PORT":$! > $PIDFILE
     #Start up the webdriver
     echo "${GREEN}Started PhantomJS webdriver"
