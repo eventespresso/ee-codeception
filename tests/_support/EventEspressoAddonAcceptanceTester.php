@@ -53,12 +53,11 @@ class EventEspressoAddonAcceptanceTester extends EventEspressoAcceptanceTester
         try {
             $I->seePluginDeactivated($this->addon_slug);
             $I->activatePlugin($this->addon_slug);
-            $I->logOut();
         } catch (Exception $e) {
             //do nothing except logout because its already active.
-            echo sprintf('The addon with the slug %s is already active.', $this->addon_slug);
-            $I->logOut();
+            printf("\nThe addon with the slug %s is already active.\n", $this->addon_slug);
         }
+        $I->logOut();
     }
 
 
@@ -76,11 +75,10 @@ class EventEspressoAddonAcceptanceTester extends EventEspressoAcceptanceTester
             $I->seePluginActivated($this->addon_slug);
             $I->deactivatePlugin($this->addon_slug);
             $I->see('Plugin deactivated');
-            $I->logOut();
         } catch (Exception $e) {
             //do nothing except logout because its already deactivated.
-            echo sprintf('The addon with the slug %s is already deactivated.', $this->addon_slug);
-            $I->logOut();
+            printf("\nThe addon with the slug %s is already deactivated.\n", $this->addon_slug);
         }
+        $I->logOut();
     }
 }

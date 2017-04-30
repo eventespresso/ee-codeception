@@ -41,12 +41,11 @@ class EventEspressoAcceptanceTester extends AcceptanceTester
             $I->seePluginDeactivated('event-espresso');
             $I->activatePlugin('event-espresso');
             $I->see('Welcome to Event Espresso');
-            $I->logOut();
         } catch (Exception $e) {
             //do nothing except logout because its already active.
-            echo "Event Espresso core plugin is already active.";
-            $I->logOut();
+            echo "\nEvent Espresso core plugin is already active.\n";
         }
+        $I->logOut();
     }
 
 
@@ -64,12 +63,11 @@ class EventEspressoAcceptanceTester extends AcceptanceTester
             $I->seePluginActivated('event-espresso');
             $I->deactivatePlugin('event-espresso');
             $I->see('Plugin deactivated');
-            $I->logOut();
         } catch (Exception $e) {
             //do nothing except logout because its already deactivated.
-            echo "Event Espresso core plugin is already deactivated.";
-            $I->logOut();
+            echo "\nEvent Espresso core plugin is already deactivated.\n";
         }
+        $I->logOut();
     }
 
 
@@ -81,6 +79,8 @@ class EventEspressoAcceptanceTester extends AcceptanceTester
     {
         $I = $this;
         $I->moveMouseOver('#wp-admin-bar-my-account');
+        $I->waitForElement("li#wp-admin-bar-logout > a.ab-item");
+        $I->see('Log Out', '.ab-item');
         $I->click("li#wp-admin-bar-logout > a.ab-item");
         $I->see("You are now logged out.");
     }
