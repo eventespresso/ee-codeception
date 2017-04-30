@@ -41,10 +41,10 @@ setupWPdb() {
 install_codeception_tests_from_plugin() {
     # If addon package is present then only installing tests from addon package
     if [ -n "$ADDON_PACKAGE" ]; then
-        cp $WP_SITE_PATH/wp-content/plugins/$ADDON_PACKAGE/acceptance_tests/* $PROJECT_ROOT/acceptance/
+        cp $WP_SITE_PATH/wp-content/plugins/$ADDON_PACKAGE/acceptance_tests/* $PROJECT_ROOT/tests/acceptance/
     # ...otherwise we install the core plugin tests
     else
-        cp $WP_SITE_PATH/wp-content/plugins/event-espresso-core/acceptance_tests/* $PROJECT_ROOT/acceptance/
+        cp $WP_SITE_PATH/wp-content/plugins/event-espresso-core/acceptance_tests/* $PROJECT_ROOT/tests/acceptance/
     fi
 }
 if [ -n "$START_FROM_SCRATCH" ] || [ ! -d "$WP_SITE_PATH/wp-admin" ]; then
