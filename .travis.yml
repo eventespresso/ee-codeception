@@ -24,10 +24,10 @@ matrix:
 before_script:
   # get rid of xdebug! don't need it.
   - phpenv config-rm xdebug.ini
-  # start services (webserver and webdriver)
-  - source server-services start
   # run composer to install what's needed
   - composer install --prefer-source
+  # start services (webserver and webdriver)
+  - source server-services start
   # setup tests
   - source setup-tests.sh
 
