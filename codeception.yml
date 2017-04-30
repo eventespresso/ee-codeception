@@ -13,7 +13,7 @@ modules:
     WPDb:
       dsn: 'mysql:host=localhost;dbname=wp_acceptance_tests'
       user: root
-      password: root
+      password: ''
       dump: tests/_data/dump.sql
       populate: false
       cleanup: false
