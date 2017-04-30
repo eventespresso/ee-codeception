@@ -23,11 +23,11 @@ matrix:
 
 before_script:
   # start services (webserver and webdriver)
-  - source start-services.sh start_server
+  - ./server-services start
   # run composer to install what's needed
   - composer install --prefer-source
   # setup tests
   - source setup-tests.sh
 
 script:
-  - vendor/bin/wpcept run
+  - vendor/bin/cept run
