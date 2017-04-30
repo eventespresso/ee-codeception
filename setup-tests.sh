@@ -8,7 +8,7 @@ fi
 
 mkdir -p $SERVER_PATH
 
-function install_wp_and_ee {
+install_wp_and_ee() {
     echo "Creating WordPress test site..."
     rm -rf $WP_SITE_PATH
     mkdir $WP_SITE_PATH
@@ -19,11 +19,6 @@ function install_wp_and_ee {
     define( 'WP_DEBUG_DISPLAY', false );
     define( 'WP_DEBUG_LOG', true );
 PHP
-    echo "Creating WordPress test database..."
-    wp db drop --yes
-    wp db create
-    wp core install --url="$WP_SITE_URL" --title="Acceptance Testing Site" --admin_user="admin" --admin_password="admin" --admin_email="admin@example.com"
-
     ##Install EE core
     wp plugin install https://github.com/eventespresso/event-espresso-core/archive/$EE_BRANCH.zip --force
 
@@ -33,16 +28,23 @@ PHP
     fi
 }
 
+
+setupWPdb() {
+    cd $WP_SITE_PATH
+    echo "Creating WordPress test database..."
+    wp db drop --yes
+    wp db create
+    wp core install --url="$WP_SITE_URL" --title="Acceptance Testing Site" --admin_user="admin" --admin_password="admin" --admin_email="admin@example.com"
+}
+
 #This takes care of copying any tests from the plugin for codeception tests
-function install_codeception_tests_from_plugin {
+install_codeception_tests_from_plugin() {
     cp $WP_SITE_PATH/wp-content/plugins/event-espresso-core/acceptance_tests/* $PROJECT_ROOT/acceptance/
     if [ -n "$ADDON_PACKAGE" ]; then
         cp $WP_SITE_PATH/wp-content/plugins/$ADDON_PACKAGE/acceptance_tests/* $PROJECT_ROOT/acceptance/
     fi
 }
-
-
-if [ ! -d "$WP_SITE_PATH/wp-admin" ]; then
+if [ -n "$START_FROM_SCRATCH" ] || [ ! -d "$WP_SITE_PATH/wp-admin" ]; then
     install_wp_and_ee
     install_codeception_tests_from_plugin
     cd $PROJECT_ROOT
@@ -50,3 +52,6 @@ if [ ! -d "$WP_SITE_PATH/wp-admin" ]; then
     echo "Building Acceptance Tests with Codeception..."
     php ./vendor/bin/codecept build
 fi
+#we ALWAYS drop and recreate/install the site on new runs
+setupWPdb
+cd $PROJECT_ROOT
