@@ -1,3 +1,7 @@
 .idea
 vendor/
 tests/tmp/
+server-services-phantom.pid
+start-services.sh.log
+server-services.pid
+tests/_output
