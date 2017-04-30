@@ -30,4 +30,4 @@ before_script:
   - source setup-tests.sh
 
 script:
-  - vendor/bin/cept run
+  - vendor/bin/wpcept run
