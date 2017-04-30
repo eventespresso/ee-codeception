@@ -30,7 +30,7 @@ DB_PASS=${DB_PASS-$modules_config_WPDb_password}
 PROJECT_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DB_NAME=$modules_config_WPDb_dsn
 DB_NAME=${DB_NAME#*dbname=}
-WP_SITE_URL=$modules_config_WPBrowser_url
+WP_SITE_URL=$modules_config_WPWebDriver_url
 SERVER_PATH="$PROJECT_ROOT/tests/tmp"
 WP_SITE_PATH="$SERVER_PATH/wp"
 
