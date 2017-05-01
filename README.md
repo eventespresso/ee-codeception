@@ -49,7 +49,7 @@ When tests are triggered, this tool does the following:
 * Installs the latest version of WordPress and configures it live at `http://127.0.0.1:8888` (so it will be accessible for headless browser testing)
 * Retrieves and installs the requested branch/tag of Event Espresso core (defaults to master if none is specified).
 * Install an Event Espresso add-on (if requested).
-* Copies acceptance tests from the `acceptance_tests` folder of Event Espresso core if no EE add-on was installed or the add-on if that was requested.  These tests are copied into the codeception `tests/acceptance` folder.
+* Copies acceptance tests from the `acceptance_tests/tests` folder of Event Espresso core if no EE add-on was installed or the add-on if that was requested.  These tests are copied into the codeception `tests/acceptance` folder.
 * Executes `vendor/bin/codecept build` to build any fixtures/code needed for running the tests.
 * Runs the acceptance tests.
 * Stops the PHP webserver and `phantomjs`
@@ -98,13 +98,13 @@ Both these actor classes expose a number of additional actions that should help 
 
 ### PageObjects
 
-One thing we're striving to do with this tool is to describe all routes/elements etc for the tests via [PageObjects](http://codeception.com/docs/06-ReusingTestCode#pageobjects).  Currently there are _none_ available, however this will change as we begin writing tests and add PageObjects to this tool.  So whenever possible, use a PageObject to keep your tests dry so if we tweak element location etc in an add-on or EE core, we just have to change the related fixtures in the `PageObject` class(es) and tests should "just work".
+One thing we're striving to do with this tool is to describe all routes/elements etc for the tests via [PageObjects](http://codeception.com/docs/06-ReusingTestCode#pageobjects).  Currently there are _none_ available, however this will change as we begin writing tests and create PageObjects for use.  So whenever possible, use a PageObject to keep your tests dry so if we tweak element location etc in an add-on or EE core, we just have to change the related fixtures in the `PageObject` class(es) and tests should "just work".
 
-This is still something that could possible change over time as its likely we will need to bundle PageObjects with the ee core or the add-ons as opposed to living in this tool due to the variability of the fixtures across various branches/versions. 
+As it is with the actual test case classes (`*Cept` or `*Cest`), PageObjects should live with the repository they are built for.  So for example PageObjects for Event Espresso Core would live in the `acceptance_tests/Page` folder and they are copied from there when this tool builds the tests suite. 
 
 ### Other
 
-Along with codeception, this tool also utilizes the excellent [wpbrowser](https://github.com/lucatume/wp-browser) module.  Along with helping with the test framework, this module exposes a number of actions you can use in your tests as well, so its recommended you check out those actions.
+Along with codeception, this tool also utilizes the excellent [WPBrowser](https://github.com/lucatume/wp-browser) module.  Along with helping with the test framework, this module exposes a number of actions you can use in your tests as well, so its recommended you check out those actions.
 
 **PHPStorm Users**
 
