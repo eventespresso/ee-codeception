@@ -18,7 +18,7 @@ after_script:
   - |
     artifacts upload \
       --target-paths "artifacts/${ARTIFACT_PROJECT_SLUG}/${TRAVIS_BUILD_NUMBER}/${TRAVIS_JOB_NUMBER}" \
-      ${PROJECT_ROOT}/tests/output/ ${PROJECT_ROOT}/tests/output/debug/
+      ${PROJECT_ROOT}/tests/_output/ ${PROJECT_ROOT}/tests/_output/debug/
 notifications:
   slack:
     rooms:
