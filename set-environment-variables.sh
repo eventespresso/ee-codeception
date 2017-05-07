@@ -47,3 +47,14 @@ fi
 if [ -n "$EE_TAG" ]; then
     EE_BRANCH=$EE_TAG
 fi
+
+## For notifications etc.
+if [ -n "$ADDON_PACKAGE" ]; then
+    ARTIFACT_PROJECT_SLUG=${ADDON_PACKAGE}
+elif [ -n "$EE_TAG" ]; then
+    ARTIFACT_PROJECT_SLUG="event-espresso-core-v${EE_TAG}"
+elif [ -n "$EE_BRANCH" ]; then
+    ARTIFACT_PROJECT_SLUG="event-espresso-core-${EE_BRANCH}"
+else
+    ARTIFACT_PROJECT_SLUG="event-espresso-core-master"
+fi
