@@ -15,7 +15,7 @@ before_script:
 script:
   - vendor/bin/wpcept run
 after_script:
-  - cd ${PROJECT_ROOT}/tests/ && artifacts upload --target-paths "artifacts/ee-codeception/${TRAVIS_BUILD_NUMBER}/${TRAVIS_JOB_NUMBER}" _output/ _output/debug/
+  - cd ${PROJECT_ROOT}/tests/ && artifacts upload --target-paths "artifacts/ee-codeception/${TRAVIS_BUILD_ID}/${TRAVIS_JOB_ID}" _output/ _output/debug/
 notifications:
   slack:
     rooms:
