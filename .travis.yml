@@ -15,12 +15,10 @@ before_script:
 script:
   - vendor/bin/wpcept run
 after_script:
-  - echo ${PROJECT_ROOT}
-  - echo ${ARTIFACT_PROJECT_SLUG}
   - |
     artifacts upload \
-      --working-dir ${PROJECT_ROOT}/tests/output:${PROJECT_ROOT}/tests/output/debug \
-      --target-paths "artifacts/${ARTIFACT_PROJECT_SLUG}/${TRAVIS_BUILD_NUMBER}/${TRAVIS_JOB_NUMBER}"
+      --target-paths "artifacts/${ARTIFACT_PROJECT_SLUG}/${TRAVIS_BUILD_NUMBER}/${TRAVIS_JOB_NUMBER}" \
+      ${PROJECT_ROOT}/tests/output/ ${PROJECT_ROOT}/tests/output/debug/
 notifications:
   slack:
     rooms:
