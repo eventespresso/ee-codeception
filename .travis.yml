@@ -1,29 +1,31 @@
-# Travis CI configuration file.
-
 language: php
-
-# Configure caches
 cache:
   apt: true
-
-# 5.6 is required for Codeception but we're only going to test 7
 php:
   - 7.0
-
 sudo: false
-
 matrix:
   fast_finish: true
-
 before_script:
-  # get rid of xdebug! don't need it.
+  - curl -sL https://raw.githubusercontent.com/travis-ci/artifacts/master/install | bash
   - phpenv config-rm xdebug.ini
-  # run composer to install what's needed
   - composer install --prefer-source
-  # start services (webserver and webdriver)
   - source server-services start
-  # setup tests
   - source setup-tests.sh
-
 script:
   - vendor/bin/wpcept run
+after_script:
+  - |
+    artifacts upload \
+      --working-dir ${PROJECT_ROOT}/tests/output:${PROJECT_ROOT}/tests/output/debug
+      --target-paths "artifacts/$ARTIFACT_PROJECT_SLUG/$TRAVIS_BUILD_NUMBER/$TRAVIS_JOB_NUMBER"
+notifications:
+  slack:
+    rooms:
+      secure: MrEpm6P0uj1TAFDyGonapgWJRmZAoB54Zd7EquFhAViITsvsxqgOoAaWOJ0TTqC92y+H+EnLoYlNDmAADGXYjQ8T0JBJgnwdQyTPQybYncNvofDZorkBfLWxYxmh5RGNmXX59bwgJNF3UA3H0znlT+dE1OMLRqcdh64sCiEj2zxMJUtCLNQWe6eT+TmYNo4OOwmCFuIiOVJX+Z26En4g2oLDtEIk+ywPfsHiYeWVVbZKEGoEwiSuqis6tcMsyin/pgTKMRvbe63qqrHDNNtY31XSZktEiTxb+i7Km9+Nw+ZwossEMGqa++VN/lj3F8SD7NyNNARY+GR84v9IYw3RfRy+G51W2mT6Q13GbOrRxs17Zg+Ml5qMqlu1GyLzOY2HmI3nux3UovoHosC6IDRDo7Tv3i18HsMs0s4KTgpJtvoz4TPy/VtPjNg/dbKu9QthJiBbAjt4EWoHbWn89b9MfxNL3xt2Au0f0pquaiVXyrT4qBkdHEL5sJOhsxiZ1rB5Nly3Bxb7cxp8bPD9ANUJy4NJx4roBu7uqLQsjZ0ZO+7d5IQfZ+F4/MfxSeWl5pEbWjXk9mg4SUmnfskGGzw0NGOTJ5Y3NwI6jcln7toXQXAqrK2GTECi5KPBVVZVhQGBzzhR3C5KifYQ90T1OmSM08hZk76G2UbECpW/ENVZxZU=
+    on_success: always
+    on_failure: always
+    on_start: always
+    template:
+      - "Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) of %{repository}@%{branch} by %{author} %{result} in %{duration}"
+      - "Build details: %{build_url}  Artifacts: https://testartifacts.eventespresso.com/%{build_number}"
