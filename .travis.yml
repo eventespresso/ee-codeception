@@ -15,10 +15,12 @@ before_script:
 script:
   - vendor/bin/wpcept run
 after_script:
+  - echo ${PROJECT_ROOT}
+  - echo ${ARTIFACT_PROJECT_SLUG}
   - |
     artifacts upload \
       --working-dir ${PROJECT_ROOT}/tests/output:${PROJECT_ROOT}/tests/output/debug \
-      --target-paths "artifacts/$ARTIFACT_PROJECT_SLUG/$TRAVIS_BUILD_NUMBER/$TRAVIS_JOB_NUMBER"
+      --target-paths "artifacts/${ARTIFACT_PROJECT_SLUG}/${TRAVIS_BUILD_NUMBER}/${TRAVIS_JOB_NUMBER}"
 notifications:
   slack:
     rooms:
@@ -28,4 +30,4 @@ notifications:
     on_start: always
     template:
       - "Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) of %{repository}@%{branch} by %{author} %{result} in %{duration}"
-      - "Build details: %{build_url}  Artifacts: https://testartifacts.eventespresso.com/%{build_number}"
+      - "**Artifacts:** https://testartifacts.eventespresso.com/build/%{build_number}"
