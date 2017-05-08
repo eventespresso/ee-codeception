@@ -36,6 +36,7 @@ class EventEspressoAcceptanceTester extends AcceptanceTester
         $I = $this;
         $I->loginAsAdmin();
         $I->amOnPluginsPage();
+        $I->makeScreenshot('plugin_page.png');
         $I->waitForText('Plugins');
         try {
             $I->seePluginDeactivated('event-espresso');
