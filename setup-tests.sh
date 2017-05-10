@@ -32,6 +32,18 @@ PHP
 }
 
 
+## if we have ADDITIONAL_PLUGINS_TO_INSTALL defined then let's use wp-cli to install them.
+install_additional_plugins() {
+    if [ -n ${ADDITIONAL_PLUGINS_TO_INSTALL} ]; then
+        echo "Installing additional requested plugins"
+        cd ${WP_SITE_PATH}
+
+        for plugin_slug in ${ADDITIONAL_PLUGINS_TO_INSTALL[@]}; do
+            sh ${WPCLIPATH}wp plugin install ${plugin_slug} --force
+        done
+    fi
+}
+
 setupWPdb() {
     cd $WP_SITE_PATH
     echo "Creating WordPress test database..."
@@ -42,6 +54,16 @@ setupWPdb() {
 
 #This takes care of copying any tests from the plugin for codeception tests
 install_codeception_tests_from_plugin() {
+    ## always copy PageObjects from EE core over if present
+    if [ -d ${WP_SITE_PATH}/wp-content/plugins/event-espresso-core/acceptance_tests/Page ]; then
+        cp ${WP_SITE_PATH}/wp-content/plugins/event-espresso-core/acceptance_tests/Page/* ${PROJECT_ROOT}/tests/_support/Page
+    fi
+
+    ## always call build_ee on core plugin if the yaml is present.
+    if [ -f "${WP_SITE_PATH}/wp-content/plugins/event-espresso-core/acceptance_tests/ee-codeception.yml" ]; then
+        ${PROJECT_ROOT}/vendor/bin codecept build_ee ${WP_SITE_PATH}/wp-content/plugins/event-espresso-core/acceptance_tests/ee-codeception.yml
+    fi
+
     # If addon package is present then only installing tests from addon package
     if [ -n "$ADDON_PACKAGE" ]; then
         cp ${WP_SITE_PATH}/wp-content/plugins/${ADDON_PACKAGE}/acceptance_tests/tests/* ${PROJECT_ROOT}/tests/acceptance/
@@ -49,14 +71,13 @@ install_codeception_tests_from_plugin() {
         if [ -d ${WP_SITE_PATH}/wp-content/plugins/${ADDON_PACKAGE}/acceptance_tests/Page ]; then
             cp $WP_SITE_PATH/wp-content/plugins/${ADDON_PACKAGE}/acceptance_tests/Page/* ${PROJECT_ROOT}/tests/_support/Page
         fi
+        ## ee-codeception.yml present? This will be used for any build processing for the tests.
+        if [ -f "${WP_SITE_PATH}/wp-content/plugins/${ADDON_PACKAGE}/acceptance_tests/ee-codeception.yml" ]; then
+            ${PROJECT_ROOT}/vendor/bin codecept build_ee ${WP_SITE_PATH}/wp-content/plugins/${ADDON_PACKAGE}/acceptance_tests/ee-codeception.yml
+        fi
     # ...otherwise we install the core plugin tests
     else
         cp ${WP_SITE_PATH}/wp-content/plugins/event-espresso-core/acceptance_tests/tests/* ${PROJECT_ROOT}/tests/acceptance/
-    fi
-
-    ## always copy PageObjects from EE core over if present
-    if [ -d ${WP_SITE_PATH}/wp-content/plugins/event-espresso-core/acceptance_tests/Page ]; then
-        cp ${WP_SITE_PATH}/wp-content/plugins/event-espresso-core/acceptance_tests/Page/* ${PROJECT_ROOT}/tests/_support/Page
     fi
 }
 if [ -n "$START_FROM_SCRATCH" ] || [ ! -d "${WP_SITE_PATH}/wp-admin" ]; then
