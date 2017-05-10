@@ -28,3 +28,5 @@ modules:
       adminUsername: admin
       adminPassword: admin
       adminPath: /wp-admin
+extensions:
+  commands: [EventEspresso\Codeception\commands\BuildEETests]
