@@ -3,12 +3,13 @@ namespace EventEspresso\Codeception\commands;
 
 use Codeception\CustomCommandInterface;
 use Mustache_Engine;
-use Symfony\Component\Config\Exception\FileLoaderLoadException;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputOption;
+use Codeception\Configuration;
+use Symfony\Component\Console\Input\InputArgument;
 
 class BuildEETests extends Command implements CustomCommandInterface
 {
@@ -31,6 +32,25 @@ class BuildEETests extends Command implements CustomCommandInterface
      */
     protected $input;
 
+
+    /**
+     * @var Filesystem
+     */
+    protected $filesystem;
+
+
+    /**
+     * The project path for this install.
+     * @var string
+     */
+    protected $project_path;
+
+
+    /**
+     * @var Mustache_Engine
+     */
+    protected $mustache;
+
     /**
      * returns the name of the command
      *
@@ -42,11 +62,22 @@ class BuildEETests extends Command implements CustomCommandInterface
     }
 
 
+    protected function configure()
+    {
+        $this->vars = [];
+        $this->setName('build_ee')
+            ->setDescription('Sets up helper traits for EE acceptance test setup.')
+            ->addArgument('config_path', InputArgument::REQUIRED, 'Path to the ee-codeception.yml file');
+        parent::configure();
+    }
+
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $config_file = $input->getFirstArgument();
-
+        $this->filesystem = new FileSystem;
+        $this->mustache = new Mustache_Engine;
+        $this->project_path = Configuration::projectDir();
+        $config_file = $input->getArgument('config_path');
         $this->output = $output;
         $this->input = $input;
 
@@ -61,33 +92,10 @@ class BuildEETests extends Command implements CustomCommandInterface
 
         //have a config file now let's do the yaml
         $this->config = Yaml::parse(file_get_contents($config_file));
-        $this->registerPluginsForInstall();
         $this->buildHelperTrait();
+        $this->output->writeln('Succesfully ran ee test builder.');
     }
 
-
-    /**
-     * This reads from the 'external_plugins` config option in the yaml and sets an environment variable
-     * for the plugins that the install script can then use.
-     *
-     * The yaml should have this format:
-     *
-     * external_plugins:
-     *   - plugin_a
-     *   - plugin_b
-     */
-    protected function registerPluginsForInstall()
-    {
-        if (! isset($this->config['external_plugins'])) {
-            $this->output->writeln('There are no external plugins defined for registration so this step is skipped.');
-        }
-
-        //assemble string for environment variable.
-        $addons_to_register = '(';
-        $addons_to_register .= implode(',', $this->config['external_plugins']);
-        $addons_to_register .= ')';
-        putenv("ADDITIONAL_PLUGINS_TO_INSTALL=$addons_to_register");
-    }
 
 
     /**
@@ -108,7 +116,89 @@ class BuildEETests extends Command implements CustomCommandInterface
      */
     protected function buildHelperTrait()
     {
-        //todo
+        //if we have an addon config for helpers, then we just use that.
+        if (isset($this->config['addon'])) {
+            $this->buildAddonHelperTraits();
+        } else {
+            $this->buildCoreHelperTraits();
+        }
+    }
+
+
+    /**
+     * Builds import statements for traits and adds that to the `AddonAggregate.php` trait.
+     */
+    protected function buildAddonHelperTraits()
+    {
+        if (! isset($this->config['addon'])) {
+            return;
+        }
+        $import_statements = $this->buildImportStatements($this->config['addon']);
+        if ($import_statements) {
+            $this->writeHelperTemplateToFile(
+                'AddonAggregate',
+                $import_statements
+            );
+        }
+    }
+
+
+
+    protected function buildCoreHelperTraits()
+    {
+        if (! isset($this->config['core'])) {
+            return;
+        }
+        $import_statements = $this->buildImportStatements($this->config['core']);
+        if ($import_statements) {
+            $this->writeHelperTemplateToFile(
+                'CoreAggregate',
+                $import_statements
+            );
+        }
+    }
+
+
+    /**
+     * @param $file_name_without_extension
+     * @param $template_arguments
+     */
+    protected function writeHelperTemplateToFile($file_name_without_extension, $import_statements)
+    {
+        $this->filesystem->dumpfile(
+            $this->project_path . 'src/helpers/' . $file_name_without_extension . '.php',
+            $this->mustache->render(
+                file_get_contents(
+                    $this->project_path . 'src/templates/' . $file_name_without_extension . '.mustache'
+                ),
+                array(
+                    'imported_traits' => $import_statements
+                )
+            ),
+            null
+        );
+    }
+
+
+    /**
+     * @param $helpers
+     * @return string
+     */
+    protected function buildImportStatements($helpers)
+    {
+        $helpers = (array) $helpers;
+        if (! $helpers) {
+            return '';
+        }
+        //assemble the statements to add to our aggregate trait.
+        $import_statements = 'use ' . $helpers[0] . ";\n";
+        unset($helpers[0]);
+        if ($helpers) {
+            foreach ($helpers as $helper) {
+                $import_statements .= '    use ' . $helper . ";\n";
+            }
+        }
+        return $import_statements;
     }
 
 }
