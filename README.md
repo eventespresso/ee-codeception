@@ -53,6 +53,8 @@ When tests are triggered, this tool does the following:
 * Copies any Page objects from the `acceptance_tests/Page` folder of Event Espresso core _and_ the EE add-on (if installed) into `tests/_support/Page` folder of ee-codeception.
 * copies any `Helper` traits from the `acceptance_tests/Helpers` folder of Event Espresso core _and_ the EE add-on (if installed) into `src/helpers`
 * Executes `vendor/bin/codecept build` to build any fixtures/code needed for running the tests.
+* Runs the `build_ee` command with any `ee-codeception.yml` file found in either the `event-espresso-core/acceptance_tests` or the installed EE addon. 
+* Installs any additional requested WordPress plugins indicated in the `ee-codeception.yml` file.
 * Runs the acceptance tests.
 * Stops the PHP webserver and `phantomjs`
 
@@ -98,11 +100,88 @@ $I = new EventEspressoAddonAcceptanceTester($scenario, 'eea-addon-people', false
 ```
 Both these actor classes expose a number of additional actions that should help you with the tests you write (you can check in the actor classes for what is currently available).
 
+Note each custom actor class also by default imports its relevant helper trait.  For `EventEspressoAcceptanceTester` the `EventEspresso\Codeception\helpers\CoreAggregate` trait is imported, and for `EventEspressoAddonAcceptanceTester` the `EventEspresso\Codeception\helpers\AddonAggregate` trait is imported.  These are special generated traits that allow us to have helper traits defined in their associated repository which makes acceptance tests more version aware.
+
+For this reason, _most_ custom actor actions should be built in a helper trait and not in these actors.
+
 ### PageObjects
 
 One thing we're striving to do with this tool is to describe all routes/elements etc for the tests via [PageObjects](http://codeception.com/docs/06-ReusingTestCode#pageobjects).  Currently there are _none_ available, however this will change as we begin writing tests and create PageObjects for use.  So whenever possible, use a PageObject to keep your tests dry so if we tweak element location etc in an add-on or EE core, we just have to change the related fixtures in the `PageObject` class(es) and tests should "just work".
 
 As it is with the actual test case classes (`*Cept` or `*Cest`), PageObjects should live with the repository they are built for.  So for example PageObjects for Event Espresso Core would live in the `acceptance_tests/Page` folder and they are copied from there when this tool builds the tests suite. 
+
+### Helper Traits
+
+As mentioned in the Additional Actors section, the preferred method for adding shared actions for your tests is to create a Helper trait within the `acceptance_tests/Helpers` folder and then when the acceptance test build process is run it will automatically import those actions into the actor via a generated process.  So there's two things you need to do:
+
+#### First: build your trait.
+
+As an example:
+
+```php
+<?php
+namespace EventEspresso\Codeception\helpers;
+
+trait Test
+{
+    public function seeSomething()
+    {
+        /* @var \EventEspressoAcceptanceTester **/
+        $I = $this;
+        $I->seeElement('#cheesburger');
+    }
+}
+```
+
+Some common things for all Helper traits:
+
+- All of them should be within the `EventEspresso\Codeception\helpers` namespace.
+- `$this` will refer to an instance of the actor the trait is registered with.  In this case this is a helper trait added to `event-espresso-core/acceptance_tests/Helpers` so it will be imported into the `EventEspressoAcceptanceTests` actor.
+
+#### Second: add your trait(s) to the `ee-codeception.yml`
+
+For example the trait above would be added to `event-espresso-core/acceptance_tests/ee-codeception.yml` like this:
+
+```yaml
+core:
+  - Test
+```
+
+Each additional trait would be added on a new line indented the same.  So for example if we had another trait named `EventAdmin`:
+
+```yaml
+core:
+  - Test
+  - EventAdmin
+```
+
+For helper traits added to add-ons.  Then the yaml entry would be a bit different.  So for example if we had `PeopleAdmin` and `PeopleFrontend` traits in `eea-people-addon/acceptance_tests/Helpers`, then in the `eea-people-addon/acceptance_tests/ee-codeception.yml` file we'd have something like this:
+
+```yaml
+addon:
+  - PeopleAdmin
+  - PeopleFrontend
+```
+
+> **Note:** the yaml files do **not** need the fully qualified class name for the entry.  Only the trait name is needed.  However, that's why its important you declare the correct namespace in the file containing the trait.
+
+#### Some general best practices to follow:
+- Keep your traits simple and specific to what they are for (eg all EventAdmin related actions could go in a `EventAdmin` trait).
+- As much as possible use `PageObjects` in your traits rather than hardcoding references to css elements or paths.  This makes things more future proof as things change. Rather than needing to change all the hardcoded references in your traits, you can just change the PageObject.
+
+### Requiring additional WordPress plugins for installation.
+
+For some of your acceptance tests, you may want to install an additional WordPress plugins to aid with testing.  For example the WP Crontrol plugin (wp-crontrol slug) is commonly used  in manual user testing to force trigger a scheduled cron event (or to verify that scheduled cron events exist).  This library has a way of indicating you want certain WordPress plugins installed.
+
+Within the ee-core or ee-add-on `ee-codeception.yml` file, you can indicate all the extra WordPress plugins you want installed like this:
+
+```yaml
+external_plugins:
+  - wp-crontrol
+  - organize-series
+```
+
+If you have the path to the public github repository that should work as well.  The plugins will be installed using wp-cli during the test setup process.  These plugins will be NOT be activated by default, so your test process will need to require activating them before relying on them.
 
 ### Other
 
