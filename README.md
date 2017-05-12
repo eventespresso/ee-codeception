@@ -51,6 +51,7 @@ When tests are triggered, this tool does the following:
 * Install an Event Espresso add-on (if requested).
 * Copies acceptance tests from the `acceptance_tests/tests` folder of Event Espresso core if no EE add-on was installed or the add-on if that was requested.  These tests are copied into the codeception `tests/acceptance` folder.
 * Copies any Page objects from the `acceptance_tests/Page` folder of Event Espresso core _and_ the EE add-on (if installed) into `tests/_support/Page` folder of ee-codeception.
+* copies any `Helper` traits from the `acceptance_tests/Helpers` folder of Event Espresso core _and_ the EE add-on (if installed) into `src/helpers`
 * Executes `vendor/bin/codecept build` to build any fixtures/code needed for running the tests.
 * Runs the acceptance tests.
 * Stops the PHP webserver and `phantomjs`
