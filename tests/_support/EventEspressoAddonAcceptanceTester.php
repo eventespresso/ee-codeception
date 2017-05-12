@@ -11,6 +11,8 @@
 class EventEspressoAddonAcceptanceTester extends EventEspressoAcceptanceTester
 {
 
+    use \EventEspresso\Codeception\helpers\AddonAggregate;
+
     /**
      * Will hold the slug for the add-on sent in on construct.
      * Should be something like eea-people-addon

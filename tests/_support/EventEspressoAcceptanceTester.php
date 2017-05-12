@@ -1,5 +1,7 @@
 <?php
 
+use EventEspresso\Codeception\helpers\CoreAggregate;
+
 /**
  * EventEspressoAcceptanceTester
  * This actor contains methods used for EventEspresso Core tests.
@@ -10,6 +12,8 @@
  */
 class EventEspressoAcceptanceTester extends AcceptanceTester
 {
+    use CoreAggregate;
+
     /**
      * EventEspressoAcceptanceTester constructor.
      * By default, implementing this actor will ensure that the EventEspresso core plugin is active.
