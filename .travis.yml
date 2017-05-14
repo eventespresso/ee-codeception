@@ -25,5 +25,5 @@ notifications:
     on_start: always
     template:
       - "Build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>) of %{repository}@%{branch} by %{author} %{result} in %{duration}"
-      - "For commit: %{commit_message}"
+      - "%{commit_message}"
       - "Artifacts (only valid on fails): https://testartifacts.eventespresso.com/build/%{build_id}"
