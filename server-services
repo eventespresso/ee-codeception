@@ -4,7 +4,7 @@
 ## get some environment variables if they haven't been set yet.
 if [ -z $WP_PATH ]; then
     ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-    WP_PATH=${ROOT}/tests/tmp/wp
+    export WP_PATH=${ROOT}/tests/tmp/wp
 fi
 
 ## Create the wp directory if it doesn't exist for the webserver to point to.
