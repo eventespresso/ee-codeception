@@ -36,7 +36,7 @@ done
 ##make sure webservers are started
 ./server-services start
 
-./setup-tests.sh
+source setup-tests.sh
 echo "Running Acceptance Tests with Codeception..."
 php ./vendor/bin/wpcept run
 ## stop webservers
