@@ -41,6 +41,7 @@ install_wp_and_ee() {
     define( 'WP_DEBUG', true );
     define( 'WP_DEBUG_DISPLAY', false );
     define( 'WP_DEBUG_LOG', true );
+    define( 'EE_DISABLE_HELP_TOURS', true);
 PHP
     setupWPdb
     cd $WP_SITE_PATH
@@ -68,9 +69,9 @@ install_additional_plugins() {
     ##additional plugins instructed by the addon package (if present)
     if [ -n "$ADDON_PACKAGE" ]; then
         if [ -f "${WP_SITE_PATH}/wp-content/plugins/${ADDON_PACKAGE}/acceptance_tests/ee-codeception.yml" ]; then
-            eval $(parse_yaml ${WP_SITE_PATH}/wp-content/plugins/${ADDON_PACKAGE}/acceptance_tests/ee-codeception.yml addon)
-            for plugin_slug in ${addon_external_plugins[@]}; do
-                sh ${WPCLIPATH}wp plugin install ${plugin_slug} --force
+            eval $(parse_yaml ${WP_SITE_PATH}/wp-content/plugins/${ADDON_PACKAGE}/acceptance_tests/ee-codeception.yml addon_)
+            for addon_plugin_slug in ${addon_external_plugins[@]}; do
+                sh ${WPCLIPATH}wp plugin install ${addon_plugin_slug} --force
             done
         fi
     fi
