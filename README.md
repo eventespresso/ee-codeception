@@ -187,6 +187,16 @@ If you have the path to the public github repository that should work as well.  
 
 Along with codeception, this tool also utilizes the excellent [WPBrowser](https://github.com/lucatume/wp-browser) module.  Along with helping with the test framework, this module exposes a number of actions you can use in your tests as well, so its recommended you check out those actions.
 
+**XPath Tools**
+
+One of the main ways in which elements and items in the dom can be "navigated" via acceptance tests is via xPath.  I _highly_ recommend installing a browser plugin such as [XPath Helper for Chrome](https://chrome.google.com/webstore/detail/xpath-helper/hgimnogjllphhhkhlmebbmlgjoejdpjl) for discovering the XPath to use for your tests.  There's also an equivalent tool for other browsers.
+
+**Remember** however:
+
+- Watch for dynamically generated strings used in the css (ids etc).  Anything that could vary between tests should not be used.  To help with this you can use xPath functions such as `starts-with` etc to modify the xPath to be better for tests.
+- Avoid hardcoding your xPaths in the actual test Cept/Cest.  Instead, use PageObjects (as mentioned above).  That way if the path changes either because a change in WordPress or a change in core, it's easier to update.
+- Use the array format for adding your locator's as it is [significantly faster](http://codeception.com/docs/modules/WebDriver#locating-elements).  
+
 **PHPStorm Users**
 
 I have my Event Espresso Core and add-ons in a separate project than this library.  Without any modification, that setup means I'm not getting the power of PHPStorm auto-completion and code-inspection when writing acceptance tests.  To get around that, just make sure you add the path to wherever you've installed this tool to the php include paths in your EE Core and/or add-ons project.  Just go to preferences, then `Languages & Frameworks > PHP`.  Then click on the `Project Configuration` tab.  Then click on the `+` near the bottom of that screen and browse to the path this tool was installed in.  Then make sure you click the `Apply` button and you should be all set!
