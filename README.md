@@ -40,6 +40,7 @@ However, there are some other arguments you can use with this script to adjust t
 | `-t`     |   `./run-locally.sh -t 4.8.36.p                                                   `                                                                                         | This is used to indicate what _tag_ of EE core you want the tests run against. Make sure you use a tag that is not the release tag (with all tests folders removed)                                                                              |
 | `-a`     |   `./run-locally.sh -a eea-people-addon                                                                                  `                                                  | This is used to indicate what add-on you want to run acceptance tests for.  You can use this in combination with `-b` to run the add-on against a specific version of EE core. When this flag is used, EE core acceptance tests are not executed.|
 | `-s`     |   `./run-locally.sh -s                                                                                                                         `                            | When you want to rebuild your tests from scratch, use this flag.                                                                                                                                                                                 |
+| `-f` | `./run-locally.sh -f ActivationCept.php` | When you want to just run a specific acceptance test in the `tests/acceptance` folder.
 
 ## What happens under the hood
 

@@ -6,7 +6,7 @@ usage() {
     exit 2
 }
 
-while getopts "hsb:t:a:" opt; do
+while getopts "hsb:t:a:f:" opt; do
     case ${opt} in
         h)
             usage
@@ -23,6 +23,9 @@ while getopts "hsb:t:a:" opt; do
         s)
             export START_FROM_SCRATCH=true
             ;;
+        f)
+            export FILES=${OPTARG}
+            ;;
         :)
             echo "Option -$OPTARG requires an argument." >&2
             exit 1
@@ -38,6 +41,10 @@ done
 
 source setup-tests.sh
 echo "Running Acceptance Tests with Codeception..."
-php ./vendor/bin/wpcept run --steps
+if [ -n "$FILES" ]; then
+    php ./vendor/bin/wpcept run acceptance ${FILES} --steps
+else
+    php ./vendor/bin/wpcept run --steps
+fi
 ## stop webservers
 ./server-services stop
