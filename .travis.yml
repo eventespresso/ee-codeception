@@ -13,7 +13,7 @@ before_script:
   - source server-services start
   - source setup-tests.sh
 script:
-  - vendor/bin/wpcept run
+  - vendor/bin/wpcept run --steps
 after_script:
   - source after-tests.sh
 notifications:

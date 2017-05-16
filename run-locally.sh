@@ -38,6 +38,6 @@ done
 
 source setup-tests.sh
 echo "Running Acceptance Tests with Codeception..."
-php ./vendor/bin/wpcept run
+php ./vendor/bin/wpcept run --steps
 ## stop webservers
 ./server-services stop
