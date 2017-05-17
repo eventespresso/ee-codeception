@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "4ee337ee94c2927417bfa100b4803970",
+    "content-hash": "a87f5c5e730fe88bfb2dce3e65e0518f",
     "packages": [
         {
             "name": "behat/gherkin",
@@ -441,6 +441,59 @@
                 "url"
             ],
             "time": "2017-03-20T17:10:46+00:00"
+        },
+        {
+            "name": "kolyunya/codeception-markup-validator",
+            "version": "3.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Kolyunya/codeception-markup-validator.git",
+                "reference": "8c9ce4fd66dabe1c65e44ff8e681e20f9988c986"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Kolyunya/codeception-markup-validator/zipball/8c9ce4fd66dabe1c65e44ff8e681e20f9988c986",
+                "reference": "8c9ce4fd66dabe1c65e44ff8e681e20f9988c986",
+                "shasum": ""
+            },
+            "require": {
+                "codeception/codeception": "^2.0.0",
+                "php": ">=5.4 <8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8",
+                "satooshi/php-coveralls": "^1.0",
+                "squizlabs/php_codesniffer": "^2.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Kolyunya\\Codeception\\": "sources",
+                    "Kolyunya\\Codeception\\Tests\\": "tests"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Kolyunya",
+                    "email": "oleynikovny@mail.ru",
+                    "homepage": "http://github.com/Kolyunya"
+                }
+            ],
+            "description": "Markup validator module for Codeception.",
+            "homepage": "https://github.com/Kolyunya/codeception-markup-validator",
+            "keywords": [
+                "acceptance-testing",
+                "codeception",
+                "codeception-module",
+                "html-validator",
+                "markup-validator",
+                "w3c-validator"
+            ],
+            "time": "2017-04-29T20:33:45+00:00"
         },
         {
             "name": "mustache/mustache",

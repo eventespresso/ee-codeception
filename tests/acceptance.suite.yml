@@ -11,3 +11,4 @@ modules:
         - \Helper\EventEspresso
         - WPDb
         - WPCLI
+        - Kolyunya\Codeception\Module\MarkupValidator
