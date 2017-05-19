@@ -52,6 +52,13 @@ PHP
     if [ -n "$ADDON_PACKAGE" ]; then
         sh ${WPCLIPATH}wp plugin install https://github.com/eventespresso/${ADDON_PACKAGE}/archive/master.zip --force
     fi
+
+    #if mailcatcher is installed then lets add the mu-plugin to WP
+    if [ -n "$HAS_MAILCATCHER" ]; then
+        echo 'copying mailcatcher plugin into mu-plugins folder';
+        mkdir ${WP_SITE_PATH}/wp-content/mu-plugins
+        cp ${PROJECT_ROOT}/bin/wp/mailcatcher.php ${WP_SITE_PATH}/wp-content/mu-plugins/mailcatcher.php
+    fi
 }
 
 
@@ -74,12 +81,6 @@ install_additional_plugins() {
                 sh ${WPCLIPATH}wp plugin install ${addon_plugin_slug} --force
             done
         fi
-    fi
-
-    #if mailcatcher is installed then lets add the mu-plugin to WP
-    if [ -n "$HAS_MAILCATCHER" ]; then
-        mkdir ${WP_SITE_PATH}/wp-content/mu-plugins
-        cp ${PROJECT_ROOT}/bin/wp/mailcatcher.php ${WP_SITE_PATH}/wp-content/mu-plugins/mailcatcher.php
     fi
 
     cd $PROJECT_ROOT
