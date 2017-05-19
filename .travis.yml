@@ -10,6 +10,7 @@ sudo: false
 matrix:
   fast_finish: true
 before_script:
+  - gem --version
   - gem install mailcatcher
   - mailcatcher
   - curl -sL https://raw.githubusercontent.com/travis-ci/artifacts/master/install | bash
