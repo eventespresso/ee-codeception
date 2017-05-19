@@ -12,3 +12,4 @@ modules:
         - WPDb
         - WPCLI
         - Kolyunya\Codeception\Module\MarkupValidator
+        - Asserts
