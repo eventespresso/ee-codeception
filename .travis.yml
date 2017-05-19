@@ -1,12 +1,17 @@
 language: php
 cache:
   apt: true
+env:
+  global:
+    - HAS_MAILCATCHER=1
 php:
   - 7.0
 sudo: false
 matrix:
   fast_finish: true
 before_script:
+  - gem install mailcatcher
+  - mailcatcher
   - curl -sL https://raw.githubusercontent.com/travis-ci/artifacts/master/install | bash
   - phpenv config-rm xdebug.ini
   - composer install --prefer-source

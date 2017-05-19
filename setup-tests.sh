@@ -75,6 +75,13 @@ install_additional_plugins() {
             done
         fi
     fi
+
+    #if mailcatcher is installed then lets add the mu-plugin to WP
+    if [ -n "$HAS_MAILCATCHER" ]; then
+        mkdir ${WP_SITE_PATH}/wp-content/mu-plugins
+        cp ${PROJECT_ROOT}/bin/wp/mailcatcher.php ${WP_SITE_PATH}/wp-content/mu-plugins/mailcatcher.php
+    fi
+
     cd $PROJECT_ROOT
 }
 
