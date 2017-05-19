@@ -11,6 +11,7 @@ matrix:
   fast_finish: true
 before_script:
   - gem --version
+  - gem install mime-types -v 2.6.2
   - gem install mailcatcher
   - mailcatcher
   - curl -sL https://raw.githubusercontent.com/travis-ci/artifacts/master/install | bash
