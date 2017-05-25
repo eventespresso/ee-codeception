@@ -37,20 +37,7 @@ class EventEspressoAcceptanceTester extends AcceptanceTester
      */
     public function ensureCoreActivated()
     {
-        $I = $this;
-        $I->loginAsAdmin();
-        $I->amOnPluginsPage();
-        $I->waitForText('Plugins');
-        try {
-            $I->seePluginDeactivated('event-espresso', true);
-            $I->activatePlugin('event-espresso', true);
-            $I->waitForText('Welcome to Event Espresso');
-        } catch (Exception $e) {
-            //do nothing except logout because its already deactivated.
-            echo "\nEvent Espresso core plugin is already active.\n";
-        }
-        //do nothing except logout because its already active.
-        $I->logOut();
+        $this->ensurePluginActive('event-espresso', 'Welcome to Event Espresso');
     }
 
 
@@ -60,17 +47,54 @@ class EventEspressoAcceptanceTester extends AcceptanceTester
      */
     public function ensureCoreDeactivated()
     {
+        $this->ensurePluginDeactivated('event-espresso', 'Plugin deactivated');
+    }
+
+
+    /**
+     * Given a plugin with the given slug, ensures that it is active.
+     * @param string $plugin_slug
+     * @param string $expected_text_after_activation
+     * @throws Exception
+     */
+    public function ensurePluginActive($plugin_slug, $expected_text_after_activation)
+    {
         $I = $this;
         $I->loginAsAdmin();
         $I->amOnPluginsPage();
         $I->waitForText('Plugins');
         try {
-            $I->seePluginActivated('event-espresso', true);
-            $I->deactivatePlugin('event-espresso', true);
-            $I->see('Plugin deactivated');
+            $I->seePluginDeactivated($plugin_slug, true);
+            $I->activatePlugin($plugin_slug, true);
+            $I->waitForText($expected_text_after_activation);
         } catch (Exception $e) {
             //do nothing except logout because its already deactivated.
-            echo "\nEvent Espresso core plugin is already deactivated.\n";
+            echo "\nPlugin with the slug $plugin_slug is already active.\n";
+        }
+        //do nothing except logout because its already active.
+        $I->logOut();
+    }
+
+
+    /**
+     * Given a plugin with the given slug, ensures that it is deactivated.
+     * @param $plugin_slug
+     * @param $expected_text_after_deactivation
+     * @throws Exception
+     */
+    public function ensurePluginDeactivated($plugin_slug, $expected_text_after_deactivation)
+    {
+        $I = $this;
+        $I->loginAsAdmin();
+        $I->amOnPluginsPage();
+        $I->waitForText('Plugins');
+        try {
+            $I->seePluginActivated($plugin_slug, true);
+            $I->deactivatePlugin($plugin_slug, true);
+            $I->see($expected_text_after_deactivation);
+        } catch (Exception $e) {
+            //do nothing except logout because its already deactivated.
+            echo "\nPlugin with the slug $plugin_slug is already deactivated.\n";
         }
         $I->logOut();
     }
