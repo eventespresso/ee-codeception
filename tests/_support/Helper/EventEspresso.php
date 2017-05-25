@@ -32,4 +32,10 @@ class EventEspresso extends \Codeception\Module
     {
         return $this->getModule('WPWebDriver')->grabValueFrom($locater);
     }
+
+
+    public function observeValueFromTextAt($locater)
+    {
+        return $this->getModule('WPWebDriver')->grabTextFrom($locater);
+    }
 }
