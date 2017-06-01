@@ -37,7 +37,7 @@ class EventEspressoAcceptanceTester extends AcceptanceTester
      */
     public function ensureCoreActivated()
     {
-        $this->ensurePluginActive('event-espresso', 'Welcome to Event Espresso');
+        $this->ensurePluginActive('event-espresso', 'Welcome to Event Espresso', true);
     }
 
 
@@ -47,27 +47,30 @@ class EventEspressoAcceptanceTester extends AcceptanceTester
      */
     public function ensureCoreDeactivated()
     {
-        $this->ensurePluginDeactivated('event-espresso', 'Plugin deactivated');
+        $this->ensurePluginDeactivated('event-espresso', 'Plugin deactivated', true);
     }
 
 
     /**
      * Given a plugin with the given slug, ensures that it is active.
+     *
      * @param string $plugin_slug
      * @param string $expected_text_after_activation
+     * @param bool   $exact  Whether or not to do an exact match on the slug.
      * @throws Exception
      */
-    public function ensurePluginActive($plugin_slug, $expected_text_after_activation)
+    public function ensurePluginActive($plugin_slug, $expected_text_after_activation, $exact = false)
     {
         $I = $this;
         $I->loginAsAdmin();
         $I->amOnPluginsPage();
         $I->waitForText('Plugins');
         try {
-            $I->seePluginDeactivated($plugin_slug, true);
-            $I->activatePlugin($plugin_slug, true);
+            $I->seePluginDeactivated($plugin_slug, $exact);
+            $I->activatePlugin($plugin_slug, $exact);
             $I->waitForText($expected_text_after_activation);
         } catch (Exception $e) {
+            $I->makeScreenshot("activating-$plugin_slug");
             //do nothing except logout because its already deactivated.
             echo "\nPlugin with the slug $plugin_slug is already active.\n";
         }
@@ -78,19 +81,21 @@ class EventEspressoAcceptanceTester extends AcceptanceTester
 
     /**
      * Given a plugin with the given slug, ensures that it is deactivated.
-     * @param $plugin_slug
-     * @param $expected_text_after_deactivation
+     *
+     * @param      $plugin_slug
+     * @param      $expected_text_after_deactivation
+     * @param bool $exact Whether or not to do an exact match on the slug.
      * @throws Exception
      */
-    public function ensurePluginDeactivated($plugin_slug, $expected_text_after_deactivation)
+    public function ensurePluginDeactivated($plugin_slug, $expected_text_after_deactivation, $exact = false)
     {
         $I = $this;
         $I->loginAsAdmin();
         $I->amOnPluginsPage();
         $I->waitForText('Plugins');
         try {
-            $I->seePluginActivated($plugin_slug, true);
-            $I->deactivatePlugin($plugin_slug, true);
+            $I->seePluginActivated($plugin_slug, $exact);
+            $I->deactivatePlugin($plugin_slug, $exact);
             $I->see($expected_text_after_deactivation);
         } catch (Exception $e) {
             //do nothing except logout because its already deactivated.
