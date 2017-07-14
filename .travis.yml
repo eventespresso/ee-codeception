@@ -13,8 +13,7 @@ before_script:
   - gem --version
   - gem install mime-types -v 2.6.2
   - gem install mailcatcher
-  - mailcatcher &
-  - mailcatcher_pid=$!
+  - mailcatcher
   - curl -sL https://raw.githubusercontent.com/travis-ci/artifacts/master/install | bash
   - phpenv config-rm xdebug.ini
   - composer install --prefer-source
@@ -25,7 +24,6 @@ script:
 after_script:
   - source after-tests.sh
   - source server-services stop
-  - kill $mailcatcher_pid
 notifications:
   slack:
     rooms:
