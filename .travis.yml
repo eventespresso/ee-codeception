@@ -23,6 +23,7 @@ script:
   - vendor/bin/wpcept run --steps
 after_script:
   - source after-tests.sh
+  - source server-services stop
 notifications:
   slack:
     rooms:
