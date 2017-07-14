@@ -14,7 +14,7 @@ before_script:
   - gem install mime-types -v 2.6.2
   - gem install mailcatcher
   - mailcatcher &
-  - export mailcatcher_pid=$!
+  - mailcatcher_pid=$!
   - curl -sL https://raw.githubusercontent.com/travis-ci/artifacts/master/install | bash
   - phpenv config-rm xdebug.ini
   - composer install --prefer-source
