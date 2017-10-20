@@ -16,6 +16,7 @@
         "codeception/codeception": "^2.2",
         "symfony/yaml": "~2.7",
         "mustache/mustache": "~2.4",
-        "kolyunya/codeception-markup-validator": "^3.0"
+        "kolyunya/codeception-markup-validator": "^3.0",
+	"wp-cli/wp-cli": "^1.4"
     }
 }

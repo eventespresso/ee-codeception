@@ -34,6 +34,12 @@ class EventEspresso extends \Codeception\Module
     }
 
 
+    /**
+     * This grabs the text from the given locater.
+     * @param $locater
+     * @return mixed
+     * @throws \Codeception\Exception\ModuleException
+     */
     public function observeValueFromTextAt($locater)
     {
         return $this->getModule('WPWebDriver')->grabTextFrom($locater);
