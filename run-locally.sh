@@ -42,9 +42,9 @@ done
 source setup-tests.sh
 echo "Running Acceptance Tests with Codeception..."
 if [ -n "$FILES" ]; then
-    php ./vendor/bin/wpcept run acceptance ${FILES} --steps
+    php ./vendor/bin/codecept run acceptance ${FILES} --steps
 else
-    php ./vendor/bin/wpcept run --steps
+    php ./vendor/bin/codecept run --steps
 fi
 ## stop webservers
 ./server-services stop

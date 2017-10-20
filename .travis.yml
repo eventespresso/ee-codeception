@@ -20,7 +20,7 @@ before_script:
   - source server-services start
   - source setup-tests.sh
 script:
-  - vendor/bin/wpcept run --steps
+  - vendor/bin/codecept run --steps
 after_script:
   - source after-tests.sh
   - source server-services stop
