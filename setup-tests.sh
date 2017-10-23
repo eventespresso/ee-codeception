@@ -137,6 +137,10 @@ install_codeception_tests_from_plugin() {
 
 ## cleans out all items from previous test run.  Typically called when "start from scratch" is triggered.
 clean_previous_test_items() {
+    ## if there is no /tests/_support/Page directory, let's create one.
+    if [ ! -d ${PROJECT_ROOT}/tests/_support/Page ]; then
+        mkdir ${PROJECT_ROOT}/tests/_support/Page
+    fi
     ## remove any existing helpers copied from previous tests
     echo -e "Removing all EE helpers from previous test.\n"
     find ${PROJECT_ROOT}/src/helpers -type f -not -name "AddonAggregate.php" -not -name "CoreAggregate.php" -print0 | xargs -0 rm -- 2> /dev/null
