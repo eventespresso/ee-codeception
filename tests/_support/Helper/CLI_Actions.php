@@ -22,7 +22,7 @@ class CLI_Actions extends CodeCeptionModule
      */
     public function seeCronHookSet($hook)
     {
-        $command = 'event list --field=hook';
+        $command = 'cron event list --field=hook';
         $command_result = $this->getModule('WPCLI')->cliToArray($command);
         if ($command_result) {
             $this->assertContains($hook, $command_result);
@@ -46,7 +46,7 @@ class CLI_Actions extends CodeCeptionModule
      */
     public function seeCronEventNextRunIsSet($hook, $expected_next_run)
     {
-        $command = 'event list --hook=' . $hook . ' --format=json --fields=hook,next_run_gmt';
+        $command = 'cron event list --hook=' . $hook . ' --format=json --fields=hook,next_run_gmt';
         $output = array();
         $command_result = $this->getModule('WPCLI')->cli($command, $output);
         if ($command_result) {
@@ -82,7 +82,7 @@ class CLI_Actions extends CodeCeptionModule
      * @throws ModuleException
      */
     public function seeCronEventScheduleIsSet($hook, $expected_schedule) {
-        $command = 'event list --hook=' . $hook . ' --format=json --fields=hook,schedule';
+        $command = 'cron event list --hook=' . $hook . ' --format=json --fields=hook,schedule';
         $output = array();
         $command_result = $this->getModule('WPCLI')->cli($command, $output);
         if ($command_result) {
@@ -107,5 +107,17 @@ class CLI_Actions extends CodeCeptionModule
                 );
             }
         }
+    }
+
+
+    /**
+     * Executes triggering the cron event for the given hook.
+     * @param string $hook
+     * @throws ModuleException
+     */
+    public function triggerCronEventToRun($hook)
+    {
+        $command = 'cron event run ' . $hook;
+        $this->getModule('WPCLI')->cli($command);
     }
 }
