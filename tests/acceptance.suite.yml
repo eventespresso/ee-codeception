@@ -9,6 +9,7 @@ modules:
     enabled:
         - WPWebDriver
         - \Helper\EventEspresso
+        - \Helper\CLI_Actions
         - WPDb
         - WPCLI
         - Kolyunya\Codeception\Module\MarkupValidator
