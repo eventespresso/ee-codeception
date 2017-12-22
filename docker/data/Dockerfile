@@ -3,6 +3,9 @@
 # Author Darren Ethier
 FROM busybox
 MAINTAINER Darren Ethier (darren@eventespresso.com)
-RUN mkdir /data
-RUN chmod -R 755 /data
+RUN addgroup -S accuser \
+    && adduser -S -s /bin/bash -h /home/accuser -G accuser accuser \
+    && echo 'ALL ALL = (ALL) NOPASSWD: ALL' >> /etc/sudoers \
+    && echo 'accuser:secret' | chpasswd
+
 CMD ["/bin/sh"]
