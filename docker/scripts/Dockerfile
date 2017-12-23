@@ -1,5 +1,5 @@
 FROM alpine:edge
-# Key for PHP packages @see https://github.com/codecase/php-alpine
+
 RUN echo 'http://dl-4.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories \
     && apk update \
     && apk add --no-cache --update \
@@ -84,6 +84,7 @@ RUN echo 'http://dl-4.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositor
     sqlite-libs \
     sqlite-dev \
     yaml \
+    mysql-client \
     zlib-dev && \
     gem install mailcatcher && \
     sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php7/php.ini && \
