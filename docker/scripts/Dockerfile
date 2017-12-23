@@ -31,6 +31,7 @@ RUN echo 'http://dl-4.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositor
     php7-dom \
     php7-xmlreader \
     php7-gettext \
+    php7-tokenizer \
     openssh-client \
     git \
     curl \
