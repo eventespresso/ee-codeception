@@ -87,7 +87,9 @@ RUN echo 'http://dl-4.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositor
     gem install mailcatcher && \
     sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php7/php.ini && \
     ln -sf /usr/bin/php7 /usr/bin/php \
-    PATH=$PATH:/usr/bin/php
+
+## ADD PHP to the path
+RUN PATH=$PATH:/usr/bin/php
 
 ## Add normal user with passwordless sudo
 RUN addgroup -S accuser \
