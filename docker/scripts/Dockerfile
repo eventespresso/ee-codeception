@@ -76,17 +76,11 @@ RUN echo 'http://dl-4.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositor
     perl \
     pkgconf \
     python2 \
-    ruby \
-    ruby-dev \
-    ruby-irb \
-    ruby-libs \
-    ruby-rdoc \
     sqlite-libs \
     sqlite-dev \
     yaml \
     mysql-client \
     zlib-dev && \
-    gem install mailcatcher && \
     sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' /etc/php7/php.ini && \
     ln -sf /usr/bin/php7 /usr/bin/php
 
