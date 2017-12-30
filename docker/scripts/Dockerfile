@@ -8,6 +8,8 @@ RUN echo 'http://dl-4.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositor
     vim \
     sudo \
     nano \
+    php7 \
+    php7-fpm \
     php7-cli \
     php7-json \
     php7-zlib \
@@ -86,6 +88,8 @@ RUN echo 'http://dl-4.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositor
 
 ## ADD PHP to the path
 ENV PATH=$PATH:/usr/bin/php
+
+COPY www.conf /etc/php7/php-fpm.conf
 
 ## Add normal user with passwordless sudo
 RUN addgroup -S accuser \
