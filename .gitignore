@@ -8,16 +8,7 @@ tests/_output
 #Acceptance tests should only be pulled in from the repositories containing them.
 tests/acceptance
 codeception.yml
-/tests/_support/Page/TicketSelector.php
-/tests/_support/Page/MessagesAdmin.php
-/tests/_support/Page/EventsAdmin.php
-/tests/_support/Page/CoreAdmin.php
-/tests/_support/Page/Checkout.php
-/tests/_support/Page/AuenMessageTemplate.php
-/tests/_support/Page/AuenGeneral.php
-/src/helpers/TicketSelector.php
-/src/helpers/MessagesAdmin.php
-/src/helpers/EventsAdmin.php
-/src/helpers/Checkout.php
-/src/helpers/BaseCoreAdmin.php
-/src/helpers/AuenGeneral.php
+tests/_support/Page/*
+!tests/_support/Page/.gitignore
+src/helpers/*
+!src/helpers/.gitignore
