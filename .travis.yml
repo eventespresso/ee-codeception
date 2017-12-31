@@ -1,29 +1,14 @@
-language: php
+sudo: required
+services:
+  - docker
 cache:
   apt: true
-env:
-  global:
-    - HAS_MAILCATCHER=1
-php:
-  - 7.0
-sudo: false
-matrix:
-  fast_finish: true
 before_script:
-  - gem --version
-  - gem install mime-types -v 2.6.2
-  - gem install mailcatcher
-  - mailcatcher
   - curl -sL https://raw.githubusercontent.com/travis-ci/artifacts/master/install | bash
-  - phpenv config-rm xdebug.ini
-  - composer install --prefer-source
-  - source server-services start
-  - source setup-tests.sh
 script:
-  - vendor/bin/codecept run --steps
+  - ./run-tests.sh
 after_script:
   - source after-tests.sh
-  - source server-services stop
 notifications:
   slack:
     rooms:
