@@ -12,3 +12,5 @@ tests/_support/Page/*
 !tests/_support/Page/.gitignore
 src/helpers/*
 !src/helpers/.gitignore
+tests/_support/_generated/*
+!tests/_support/_generated/.gitignore
