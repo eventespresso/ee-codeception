@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-## test_env setup taken from https://gist.github.com/ianmjones/c1f9819d5707324b18701aef3755074c#file-run-tests-sh
 
 source `dirname $0`
 
@@ -10,7 +9,7 @@ do
     esac
 done
 
-TEST_ENV=${TEST_ENV-""}
+TEST_ENV=${TEST_ENV-"chrome"}
 RUN_WITH=""
 
 RUN_CHROME_DEBUG=`echo "${TEST_ENV}" | sed 's/chromedebug//'`
