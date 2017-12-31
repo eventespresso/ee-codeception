@@ -4,8 +4,7 @@
 if [ ! -d ./vendor ]; then
     echo "Composer hasn't been run yet, setting up via composer"
     COMPOSER_CMD=$(which composer)
-    $COMPOSER_CMD update
-    $COMPOSER_CMD dumpautoload -o
+    $COMPOSER_CMD install
     echo "Composer done."
 fi
 
@@ -43,6 +42,9 @@ parse_yaml() {
 
 install_wp_and_ee() {
     echo "Creating WordPress test site..."
+    if [ ! -d ${WP_SITE_PATH} ]; then
+        mkdir ${WP_SITE_PATH}
+    fi
     rm -rf $WP_SITE_PATH/*
     cd "$WP_SITE_PATH"
     sh ${WPCLIPATH}wp core download --force
