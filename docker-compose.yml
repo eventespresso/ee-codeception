@@ -18,7 +18,7 @@ services:
       com.eventespresso.service: "phpfpm-server"
       com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
     volumes:
-      - ../:/home/accuser
+      - ./:/home/accuser/ee-codeception
       - ./docker/www:/home/accuser/www
       - ./docker/scripts/logs:/var/log/php7
     links:
