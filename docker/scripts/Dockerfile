@@ -1,5 +1,11 @@
 FROM alpine:edge
 
+# User/Group
+ENV MY_USER="accuser" \
+	MY_GROUP="accuser" \
+	MY_UID="1000" \
+	MY_GID="1000"
+
 RUN set -xe \
     echo 'http://dl-4.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories \
     && apk update \
@@ -96,8 +102,8 @@ ENV PATH=$PATH:/usr/bin/php
 COPY www.conf /etc/php7/php-fpm.conf
 
 ## Add normal user with passwordless sudo
-RUN addgroup -S accuser \
-    && adduser -S -s /bin/bash -h /home/accuser -G accuser accuser \
+RUN addgroup -S ${MY_GROUP} \
+    && adduser -S -s /bin/bash -h /home/accuser -G ${MY_GROUP} ${MY_USER} \
     && echo 'ALL ALL = (ALL) NOPASSWD: ALL' >> /etc/sudoers \
     && echo 'accuser:secret' | chpasswd
 
