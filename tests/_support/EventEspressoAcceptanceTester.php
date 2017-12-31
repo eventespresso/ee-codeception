@@ -1,5 +1,6 @@
 <?php
 
+use Codeception\Util\ActionSequence;
 use EventEspresso\Codeception\helpers\CoreAggregate;
 
 /**
@@ -21,10 +22,12 @@ class EventEspressoAcceptanceTester extends AcceptanceTester
      *
      * @param \Codeception\Scenario $scenario
      * @param bool                  $activate
+     * @throws Exception
      */
     public function __construct(\Codeception\Scenario $scenario, $activate = true)
     {
         parent::__construct($scenario);
+
         if ($activate) {
             $this->ensureCoreActivated();
         }
@@ -65,16 +68,13 @@ class EventEspressoAcceptanceTester extends AcceptanceTester
         $I->loginAsAdmin();
         $I->amOnPluginsPage();
         $I->waitForText('Plugins');
-        try {
-            $I->seePluginDeactivated($plugin_slug, $exact);
+        if ($I->canSeePluginDeactivated($plugin_slug, $exact)) {
             $I->activatePlugin($plugin_slug, $exact);
-            $I->waitForText($expected_text_after_activation);
-        } catch (Exception $e) {
-            $I->makeScreenshot("activating-$plugin_slug");
-            //do nothing except logout because its already deactivated.
+            $I->waitForText($expected_text_after_activation, 20);
+        } else {
+            $I->makeScreenshot("plugin-already-active-$plugin_slug");
             echo "\nPlugin with the slug $plugin_slug is already active.\n";
         }
-        //do nothing except logout because its already active.
         $I->logOut();
     }
 
@@ -93,15 +93,51 @@ class EventEspressoAcceptanceTester extends AcceptanceTester
         $I->loginAsAdmin();
         $I->amOnPluginsPage();
         $I->waitForText('Plugins');
-        try {
-            $I->seePluginActivated($plugin_slug, $exact);
+        if ($I->canSeePluginActivated($plugin_slug, $exact)) {
             $I->deactivatePlugin($plugin_slug, $exact);
             $I->see($expected_text_after_deactivation);
-        } catch (Exception $e) {
-            //do nothing except logout because its already deactivated.
+        } else {
             echo "\nPlugin with the slug $plugin_slug is already deactivated.\n";
         }
         $I->logOut();
+    }
+
+
+    /**
+     * Returns whether the plugin is visible as deactivated
+     * @param string $plugin_slug
+     * @param bool   $exact
+     * @return bool
+     */
+    public function canSeePluginDeactivated($plugin_slug, $exact = false)
+    {
+        $I = $this;
+        $can_see = true;
+        try {
+            $I->seePluginDeactivated($plugin_slug, $exact);
+        } catch (Exception $e) {
+            $can_see = false;
+        }
+        return $can_see;
+    }
+
+
+    /**
+     * Returns whether the plugin is visible as activated
+     * @param string $plugin_slug
+     * @param bool   $exact
+     * @return bool
+     */
+    public function canSeePluginActivated($plugin_slug, $exact = false)
+    {
+        $I = $this;
+        $can_see = true;
+        try {
+            $I->seePluginActivated($plugin_slug, $exact);
+        } catch (Exception $e) {
+            $can_see = false;
+        }
+        return $can_see;
     }
 
 
@@ -112,11 +148,9 @@ class EventEspressoAcceptanceTester extends AcceptanceTester
     public function logOut()
     {
         $I = $this;
-        $I->moveMouseOver('#wp-admin-bar-my-account');
-        $I->waitForElement("li#wp-admin-bar-logout > a.ab-item");
-        $I->see('Log Out', '.ab-item');
-        $I->click("li#wp-admin-bar-logout > a.ab-item");
-        $I->see("You are now logged out.");
+        $I->executeJS('jQuery(\'#wp-admin-bar-my-account\').addClass(\'hover\')');
+        $I->click(['xpath'=> "//li[@id='wp-admin-bar-logout']/a"]);
+        $I->waitForText("You are now logged out.");
     }
 
 
