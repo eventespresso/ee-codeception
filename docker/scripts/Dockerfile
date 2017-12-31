@@ -1,6 +1,7 @@
 FROM alpine:edge
 
-RUN echo 'http://dl-4.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories \
+RUN set -xe \
+    echo 'http://dl-4.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories \
     && apk update \
     && apk add --no-cache --update \
     bash \
@@ -14,6 +15,8 @@ RUN echo 'http://dl-4.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositor
     php7-json \
     php7-zlib \
     php7-xml \
+    php7-xmlreader \
+    php7-xmlwriter \
     php7-pdo \
     php7-phar \
     php7-openssl \
@@ -34,6 +37,7 @@ RUN echo 'http://dl-4.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositor
     php7-xmlreader \
     php7-gettext \
     php7-tokenizer \
+    php7-zip \
     openssh-client \
     git \
     curl \
@@ -103,7 +107,7 @@ USER accuser
 
 ## Install composer
 RUN cd /home/accuser
-RUN curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/bin --filename=composer
+RUN curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
 
 ## Install wp-cli
 RUN cd /home/accuser \
