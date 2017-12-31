@@ -1,0 +1,242 @@
+version: '2'
+services:
+  #mailcatcher
+  mailcatcher:
+    image: schickling/mailcatcher
+    labels:
+      com.eventespresso.service: "mailcatcher"
+      com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
+    expose:
+      - "1025"
+      - "1080"
+
+  #php-fpm server
+  phpfpm-server:
+    image: eventespresso/ee-codeception-base
+    user: accuser
+    labels:
+      com.eventespresso.service: "phpfpm-server"
+      com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
+    volumes:
+      - ../:/home/accuser
+      - ./docker/www:/home/accuser/www
+      - ./docker/scripts/logs:/var/log/php7
+    links:
+      - db-server
+      - mailcatcher
+    expose:
+      - "9000"
+    command: ["php-fpm7", "-F"]
+
+  # Acceptance Test Variations
+  acceptance-tests:
+    image: eventespresso/ee-codeception-base
+    user: accuser
+    labels:
+      com.eventespresso.service: "acceptance-tests"
+      com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
+    volumes_from:
+      - phpfpm-server
+    links:
+      - selenium-server-chrome
+      - db-server
+      - web-server
+      - mailcatcher
+    environment:
+      - BROWSER='chrome'
+    working_dir: /home/accuser/ee-codeception
+    entrypoint: ["/home/accuser/ee-codeception/do-tests.sh"]
+
+  acceptance-tests-phantomjs:
+    image: eventespresso/ee-codeception-base
+    user: accuser
+    labels:
+      com.eventespresso.service: "acceptance-tests"
+      com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
+    volumes_from:
+      - phpfpm-server
+    links:
+      - phantomjs-server
+      - db-server
+      - web-server
+      - mailcatcher
+    environment:
+      - BROWSER=phantomjs
+    working_dir: /home/accuser/ee-codeception
+    entrypoint: ["/home/accuser/ee-codeception/do-tests.sh"]
+
+  acceptance-tests-chrome:
+    image: eventespresso/ee-codeception-base
+    user: accuser
+    labels:
+      com.eventespresso.service: "acceptance-tests"
+      com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
+    volumes_from:
+      - phpfpm-server
+    links:
+      - selenium-server-chrome
+      - db-server
+      - web-server
+      - mailcatcher
+    environment:
+      - BROWSER=chrome
+    working_dir: /home/accuser/ee-codeception
+    entrypoint: ["/home/accuser/ee-codeception/do-tests.sh"]
+
+  acceptance-tests-chrome-debug:
+    image: eventespresso/ee-codeception-base
+    user: accuser
+    labels:
+      com.eventespresso.service: "acceptance-tests-debug"
+      com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
+    volumes_from:
+      - phpfpm-server
+    links:
+      - selenium-server-chrome-debug
+      - db-server
+      - web-server
+      - mailcatcher
+    environment:
+      - BROWSER=chromedebug
+    working_dir: /home/accuser/ee-codeception
+    entrypoint: ["/home/accuser/ee-codeception/do-tests.sh"]
+
+  acceptance-tests-firefox:
+    image: eventespresso/ee-codeception-base
+    user: accuser
+    labels:
+      com.eventespresso.service: "acceptance-tests"
+      com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
+    volumes_from:
+      - phpfpm-server
+    links:
+      - selenium-server-firefox
+      - db-server
+      - web-server
+      - mailcatcher
+    environment:
+      - BROWSER=firefox
+    working_dir: /home/accuser/ee-codeception
+    entrypoint: ["/home/accuser/ee-codeception/do-tests.sh"]
+
+  acceptance-tests-firefox-debug:
+    image: eventespresso/ee-codeception-base
+    user: accuser
+    labels:
+      com.eventespresso.service: "acceptance-tests-debug"
+      com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
+    volumes_from:
+      - phpfpm-server
+    links:
+      - selenium-server-firefox-debug
+      - db-server
+      - web-server
+      - mailcatcher
+    environment:
+      - BROWSER=firefoxdebug
+    working_dir: /home/accuser/ee-codeception
+    entrypoint: ["/home/accuser/ee-codeception/do-tests.sh"]
+
+  phantomjs-server:
+    image: wernight/phantomjs
+    labels:
+      com.eventespresso.service: "phantomjs-server"
+      com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
+    expose:
+      - "8910"
+    links:
+      - web-server
+    command: ["phantomjs", "--webdriver=8910"]
+
+  selenium-server-chrome:
+    image: selenium/standalone-chrome
+    labels:
+      com.eventespresso.service: "selenium-server-chrome"
+      com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
+    expose:
+      - "4444"
+    environment:
+      - "SE_OPTS=-enablePassThrough false"
+    links:
+      - web-server
+    shm_size: '2g'
+
+  selenium-server-chrome-debug:
+    image: selenium/standalone-chrome-debug
+    labels:
+      com.eventespresso.service: "selenium-server-chrome-debug"
+      com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
+    expose:
+      - "4444"
+    ports:
+      - "5900:5900"
+    environment:
+      - "SE_OPTS=-enablePassThrough false"
+    links:
+      - web-server
+    shm_size: '2g'
+
+  selenium-server-firefox:
+    image: selenium/standalone-firefox
+    labels:
+      com.eventespresso.service: "selenium-server-firefox"
+      com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
+    expose:
+      - "4444"
+    environment:
+      - "SE_OPTS=-enablePassThrough false"
+    links:
+      - web-server
+    shm_size: '2g'
+
+  selenium-server-firefox-debug:
+    image: selenium/standalone-firefox-debug
+    labels:
+      com.eventespresso.service: "selenium-server-firefox-debug"
+      com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
+    expose:
+      - "4444"
+    ports:
+      - "5900:5900"
+    environment:
+      - "SE_OPTS=-enablePassThrough false"
+    links:
+      - web-server
+    shm_size: '2g'
+
+  db-data:
+    image: alpine:3.4
+    labels:
+      com.eventespresso.service: "db-data"
+      com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
+    volumes:
+      - /var/lib/mysql
+    command: ["echo", "DB Data Container"]
+
+  db-server:
+    image: mariadb:10.1
+    labels:
+      com.eventespresso.service: "db-server"
+      com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
+    volumes_from:
+      - db-data
+    environment:
+      MYSQL_ROOT_PASSWORD: wp
+
+  web-server:
+    image: nginx:alpine
+    labels:
+      com.eventespresso.service: "web-server"
+      com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
+    volumes_from:
+      - phpfpm-server
+    volumes:
+      - ./docker/nginx/logs:/var/log/nginx
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      default:
+        aliases:
+          - eecodeception.test
+
+networks:
+  default:

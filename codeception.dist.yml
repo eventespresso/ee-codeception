@@ -13,21 +13,21 @@ settings:
 modules:
   config:
     WPDb:
-      dsn: 'mysql:host=localhost;dbname=wp_acceptance_tests'
+      dsn: 'mysql:host=db-server;port=3306;dbname=wp_acceptance_tests'
       user: root
-      password: ''
+      password: wp
       dump: tests/_data/dump.sql
       populate: false
       cleanup: false
-      url: 'http://127.0.0.1:8888'
+      url: 'http://%WEB_HOST%'
       tablePrefix: wp_
     WPWebDriver:
-      url: 'http://127.0.0.1:8888'
-      browser: phantomjs
+      url: 'http://%WEB_HOST%'
+      browser: firefox
       port: 4444
       window_size: 1366x768
       restart: true
-      wait: 2
+      wait: 20
       adminUsername: admin
       adminPassword: admin
       adminPath: /wp-admin

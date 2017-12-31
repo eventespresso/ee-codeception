@@ -14,3 +14,71 @@ modules:
         - WPCLI
         - Kolyunya\Codeception\Module\MarkupValidator
         - Asserts
+env:
+    phantomjs:
+        modules:
+            config:
+                WPWebDriver:
+                    url: 'http://%WEB_HOST%'
+                    browser: phantomjs
+                    port: 8910
+                    host: phantomjs-server
+                    restart: true
+                    wait: 20
+                    adminUsername: admin
+                    adminPassword: admin
+                    adminPath: /wp-admin
+    firefox:
+        modules:
+            config:
+                WPWebDriver:
+                    url: 'http://%WEB_HOST%'
+                    browser: firefox
+                    port: 4444
+                    host: selenium-server-firefox
+                    restart: true
+                    wait: 20
+                    adminUsername: admin
+                    adminPassword: admin
+                    adminPath: /wp-admin
+
+    firefoxdebug:
+        modules:
+            config:
+                WPWebDriver:
+                    url: 'http://%WEB_HOST%'
+                    browser: firefox
+                    port: 4444
+                    host: selenium-server-firefox-debug
+                    restart: true
+                    wait: 20
+                    adminUsername: admin
+                    adminPassword: admin
+                    adminPath: /wp-admin
+    chrome:
+        modules:
+            config:
+                WPWebDriver:
+                    url: 'http://%WEB_HOST%'
+                    browser: chrome
+                    port: 4444
+                    host: selenium-server-chrome
+                    restart: true
+                    wait: 20
+                    adminUsername: admin
+                    adminPassword: admin
+                    adminPath: /wp-admin
+
+    chromedebug:
+        modules:
+            config:
+                WPWebDriver:
+                    url: 'http://%WEB_HOST%'
+                    browser: chrome
+                    port: 4444
+                    host: selenium-server-chrome-debug
+                    restart: true
+                    wait: 20
+                    adminUsername: admin
+                    adminPassword: admin
+                    adminPath: /wp-admin

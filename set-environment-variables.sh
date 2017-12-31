@@ -35,8 +35,22 @@ PROJECT_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 DB_NAME=$modules_config_WPDb_dsn
 DB_NAME=${DB_NAME#*dbname=}
 WP_SITE_URL=$modules_config_WPWebDriver_url
-SERVER_PATH="$PROJECT_ROOT/tests/tmp"
-WP_SITE_PATH="$SERVER_PATH/wp"
+SERVER_PATH="$( cd ${PROJECT_ROOT} && cd ../ && pwd)"
+WP_SITE_PATH="$SERVER_PATH/www/wp"
+#WEB_HOST=$(nslookup php-server 2>&1  | grep 'Address' | awk '{print $3}')
+WEB_HOST=eecodeception.test
+HAS_MAILCATCHER=1
+#MAILCATCHER_IP_ADDRESS=$(nslookup mailcatcher 2>&1 | grep 'Address' | awk '{print $3}')
+MAILCATCHER_HOST=mailcatcher
+
+echo ---------- HOST NAME OF WEB SERVER -------------
+echo ${WEB_HOST}
+echo -------------------------------------------------
+
+echo ---------- MAILCATCHER DETAILS ------------------
+echo ${MAILCATCHER_HOST}
+echo --------------------------------------------------
+
 
 ##EE core constants
 if [ -z "$EE_BRANCH" ]; then

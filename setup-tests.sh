@@ -1,4 +1,14 @@
 #!/usr/bin/env bash
+
+## if ee-codeception has not been setup, then run composer
+if [ ! -d ./vendor ]; then
+    echo "Composer hasn't been run yet, setting up via composer"
+    COMPOSER_CMD=$(which composer)
+    $COMPOSER_CMD update
+    $COMPOSER_CMD dumpautoload -o
+    echo "Composer done."
+fi
+
 ## get some environment variables if they haven't been set yet.
 if [ -z $WP_SITE_PATH ]; then
     set -o allexport
@@ -6,7 +16,7 @@ if [ -z $WP_SITE_PATH ]; then
     set +o allexport
 fi
 
-mkdir -p $SERVER_PATH
+#mkdir -p $SERVER_PATH
 
 WPCLIPATH=${PROJECT_ROOT}/vendor/bin/
 
@@ -33,16 +43,21 @@ parse_yaml() {
 
 install_wp_and_ee() {
     echo "Creating WordPress test site..."
-    rm -rf $WP_SITE_PATH
-    mkdir $WP_SITE_PATH
+    rm -rf $WP_SITE_PATH/*
     cd "$WP_SITE_PATH"
     sh ${WPCLIPATH}wp core download --force
-    sh ${WPCLIPATH}wp core config --dbname="$DB_NAME" --dbuser="$DB_USER" --dbpass="$DB_PASS" --extra-php <<PHP
+    sh ${WPCLIPATH}wp config create --dbhost="db-server" --dbname="$DB_NAME" --dbuser="$DB_USER" --dbpass="$DB_PASS" --extra-php <<PHP
     define( 'WP_DEBUG', true );
     define( 'WP_DEBUG_DISPLAY', false );
     define( 'WP_DEBUG_LOG', true );
     define( 'EE_DISABLE_HELP_TOURS', true);
 PHP
+    #if mailcatcher is installed then lets add the mu-plugin to WP
+    if [ -n "$HAS_MAILCATCHER" ]; then
+        echo 'copying mailcatcher plugin into mu-plugins folder';
+        mkdir ${WP_SITE_PATH}/wp-content/mu-plugins
+        cp ${PROJECT_ROOT}/bin/wp/mailcatcher.php ${WP_SITE_PATH}/wp-content/mu-plugins/mailcatcher.php
+    fi
     setupWPdb
     cd $WP_SITE_PATH
     ##Install EE core
@@ -51,13 +66,6 @@ PHP
     ##Install Add-on package if present
     if [ -n "$ADDON_PACKAGE" ]; then
         sh ${WPCLIPATH}wp plugin install https://github.com/eventespresso/${ADDON_PACKAGE}/archive/master.zip --force
-    fi
-
-    #if mailcatcher is installed then lets add the mu-plugin to WP
-    if [ -n "$HAS_MAILCATCHER" ]; then
-        echo 'copying mailcatcher plugin into mu-plugins folder';
-        mkdir ${WP_SITE_PATH}/wp-content/mu-plugins
-        cp ${PROJECT_ROOT}/bin/wp/mailcatcher.php ${WP_SITE_PATH}/wp-content/mu-plugins/mailcatcher.php
     fi
 }
 
@@ -91,7 +99,7 @@ setupWPdb() {
     echo "Creating WordPress test database..."
     sh ${WPCLIPATH}wp db drop --yes
     sh ${WPCLIPATH}wp db create
-    sh ${WPCLIPATH}wp core install --url="$WP_SITE_URL" --title="Acceptance Testing Site" --admin_user="admin" --admin_password="admin" --admin_email="admin@example.com"
+    sh ${WPCLIPATH}wp core install --url="http://${WEB_HOST}" --title="Acceptance Testing Site" --admin_user="admin" --admin_password="admin" --admin_email="admin@example.com"
     cd $PROJECT_ROOT
 }
 
