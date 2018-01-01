@@ -1,6 +1,5 @@
 <?php
 
-use Codeception\Util\ActionSequence;
 use EventEspresso\Codeception\helpers\CoreAggregate;
 
 /**
@@ -139,6 +138,32 @@ class EventEspressoAcceptanceTester extends AcceptanceTester
         }
         return $can_see;
     }
+
+
+    /**
+     * Goes to the login page, wait for the login form and logs in using the admin user.
+     * Copied and modified from the WPWebDriver because need to use the wait for element visible command.
+     *
+     * @param int $time
+     * @throws Exception
+     */
+    public function loginAsAdmin($time = 10)
+    {
+        $adminPath = $this->getWebDriverLoginConfig('adminPath');
+        $username = $this->getWebDriverLoginConfig('adminUsername');
+        $password = $this->getWebDriverLoginConfig('adminPassword');
+        $login_url = str_replace('wp-admin', 'wp-login.php', $adminPath);
+        $this->amOnPage($login_url);
+
+        $this->waitForElementVisible('#user_login', $time);
+        $this->waitForElementVisible('#user_pass', $time);
+        $this->waitForElementVisible('#wp-submit', $time);
+
+        $this->fillField('#user_login', $username);
+        $this->fillField('#user_pass', $password);
+        $this->click('#wp-submit');
+    }
+
 
 
     /**
