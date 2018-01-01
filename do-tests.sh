@@ -16,7 +16,7 @@ usage() {
     exit 2
 }
 
-while getopts "hsb:t:a:f:e:" opt; do
+while getopts "Rhsb:t:a:f:e:" opt; do
     case ${opt} in
         h)k
             usage

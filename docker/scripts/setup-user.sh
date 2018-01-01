@@ -3,9 +3,6 @@
 ## load common if log not declared
 declare -F log &>/dev/null && echo "" || source common.sh
 
-## set defaults
-MY_GROUP='accuser'
-MY_USER='accuser'
 
 ###
 ### Setup Group
@@ -41,6 +38,3 @@ fi
 #adduser with passwordless sudo and change password of user to secret
 echo 'ALL ALL = (ALL) NOPASSWD: ALL' >> /etc/sudoers
 echo 'accuser:secret' | chpasswd
-
-### Change ownership of all the files in the user directory.
-run "chown -R ${MY_USER}:${MY_GROUP} /home/accuser"

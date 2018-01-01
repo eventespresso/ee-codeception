@@ -2,19 +2,27 @@
 
 source `dirname $0`
 
-while getopts "hsb:t:a:f:x:e:" opt
+while getopts "Rhsb:t:a:f:x:e:" opt
 do
     case ${opt} in
         e) TEST_ENV=$OPTARG;;
+        R) REMOVE_CONTAINER=0;;
     esac
 done
 
 TEST_ENV=${TEST_ENV-"chrome"}
+### defaults to removing the container but if flagged with "-R" when executing run-tests.sh then will
+### not remove containers.  Useful when you need to go into the container to check something.
+REMOVE_CONTAINER=${REMOVE_CONTAINER-1}
 RUN_WITH=""
 
+echo "----------- container remove value ----------"
+echo ${REMOVE_CONTAINER};
+echo "---------------------------------------------"
+
 #SET HOST USER AND GROUP IDS these will get used by the entry scripts for the containers.
-HOST_USER_ID=$(id -u)
-HOST_GROUP_ID=$(id -g)
+export HOST_USER_ID=$(id -u)
+export HOST_GROUP_ID=$(id -g)
 
 echo '----------- USER ID DETAILS OUTSIDE CONTAINER -----------'
 echo "Host User ID: ${HOST_USER_ID}"
@@ -65,10 +73,16 @@ do
     docker-compose pull acceptance-tests${BROWSER}
     docker-compose run --rm -e HOST_USER_ID=${HOST_USER_ID} -e HOST_GROUP_ID=${HOST_GROUP_ID} acceptance-tests${BROWSER} $@
     if [ $? -eq 0 ]; then
-        docker stop $(docker ps -aq)
+        if [ "${REMOVE_CONTAINER}" -eq "1" ]; then
+            echo "Remove Container: ${REMOVE_CONTAINER}"
+            docker stop $(docker ps -aq)
+        fi
         exit 0
     else
-        docker stop $(docker ps -aq)
+        if [ "${REMOVE_CONTAINER}" -eq "1" ]; then
+            echo "Remove Container: ${REMOVE_CONTAINER}"
+            docker stop $(docker ps -aq)
+        fi
         exit 1
     fi
 done
