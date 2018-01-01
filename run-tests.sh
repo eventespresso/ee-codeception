@@ -64,5 +64,11 @@ do
     #make sure all images are up to date
     docker-compose pull acceptance-tests${BROWSER}
     docker-compose run --rm -e HOST_USER_ID=${HOST_USER_ID} -e HOST_GROUP_ID=${HOST_GROUP_ID} acceptance-tests${BROWSER} $@
-    docker stop $(docker ps -aq)
+    if [ $? -eq 0 ]; then
+        docker stop $(docker ps -aq)
+        exit 0
+    else
+        docker stop $(docker ps -aq)
+        exit 1
+    fi
 done
