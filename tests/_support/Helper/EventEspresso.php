@@ -44,4 +44,16 @@ class EventEspresso extends \Codeception\Module
     {
         return $this->getModule('WPWebDriver')->grabTextFrom($locater);
     }
+
+
+    /**
+     * Return the named config value from the WPWebDriver Module.
+     * @param string $config_key
+     * @return array|mixed|null
+     * @throws \Codeception\Exception\ModuleException
+     */
+    public function getWebDriverLoginConfig($config_key='')
+    {
+        return $this->getModule('WPWebDriver')->_getConfig($config_key);
+    }
 }
