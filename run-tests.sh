@@ -16,10 +16,6 @@ TEST_ENV=${TEST_ENV-"chrome"}
 REMOVE_CONTAINER=${REMOVE_CONTAINER-1}
 RUN_WITH=""
 
-echo "----------- container remove value ----------"
-echo ${REMOVE_CONTAINER};
-echo "---------------------------------------------"
-
 #SET HOST USER AND GROUP IDS these will get used by the entry scripts for the containers.
 export HOST_USER_ID=$(id -u)
 export HOST_GROUP_ID=$(id -g)
