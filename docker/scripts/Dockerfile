@@ -1,11 +1,5 @@
 FROM alpine:edge
 
-# User/Group
-ENV MY_USER="accuser" \
-	MY_GROUP="accuser" \
-	MY_UID="1000" \
-	MY_GID="1000"
-
 RUN set -xe \
     echo 'http://dl-4.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories \
     && apk update \
@@ -100,26 +94,5 @@ RUN set -xe \
 ENV PATH=$PATH:/usr/bin/php
 
 COPY www.conf /etc/php7/php-fpm.conf
-
-## Add normal user with passwordless sudo
-RUN addgroup -S ${MY_GROUP} \
-    && adduser -S -s /bin/bash -h /home/accuser -G ${MY_GROUP} ${MY_USER} \
-    && echo 'ALL ALL = (ALL) NOPASSWD: ALL' >> /etc/sudoers \
-    && echo 'accuser:secret' | chpasswd
-
-
-## Run the following as the privileged user
-USER accuser
-
-## Install composer
-RUN cd /home/accuser
-RUN curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
-
-## Install wp-cli
-RUN cd /home/accuser \
-    && curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
-    && chmod +x wp-cli.phar \
-    && sudo mv wp-cli.phar /usr/local/bin/wp \
-    && wp --info
 
 CMD "echo 'Codeception server started'"
