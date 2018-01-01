@@ -6,7 +6,7 @@ before_script:
 script:
   - ./run-tests.sh
 after_script:
-  - source after-tests.sh
+  - ./after-tests.sh
 notifications:
   slack:
     rooms:
