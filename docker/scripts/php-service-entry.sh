@@ -12,7 +12,7 @@ MY_USER='accuser'
 ## setup user if necessary
 if [ $(id accuser >/dev/null 2>&1) ]; then
     log "info" "'accuser' user already exists - deleting then resetting up with proper uids"
-    deluser ${MY_USER} ${MY_GROUP}
+    delgroup ${MY_USER} ${MY_GROUP}
     deluser ${MY_USER}
     delgroup ${MY_GROUP}
     source ./setup-user.sh
