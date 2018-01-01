@@ -2,6 +2,10 @@
 
 source `dirname $0`
 
+#change to main directory
+#@todo this needs to be modified so its more dynamic and set externally.  But for now it'll do
+cd /home/accuser/ee-codeception
+
 usage() {
     echo "----------- run-tests.sh USAGE ---------------"
     echo "usage: ./run-tests.sh"

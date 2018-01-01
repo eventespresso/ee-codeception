@@ -12,6 +12,15 @@ done
 TEST_ENV=${TEST_ENV-"chrome"}
 RUN_WITH=""
 
+#SET HOST USER AND GROUP IDS these will get used by the entry scripts for the containers.
+HOST_USER_ID=$(id -u)
+HOST_GROUP_ID=$(id -g)
+
+echo '----------- USER ID DETAILS OUTSIDE CONTAINER -----------'
+echo "Host User ID: ${HOST_USER_ID}"
+echo "Host Group ID: ${HOST_GROUP_ID}"
+echo '---------------------------------------------------------'
+
 RUN_CHROME_DEBUG=`echo "${TEST_ENV}" | sed 's/chromedebug//'`
 if [ "${TEST_ENV}" != "${RUN_CHROME_DEBUG}" ]
 then
@@ -52,6 +61,8 @@ fi
 
 for BROWSER in "${RUN_WITH}"
 do
-    docker-compose run --rm acceptance-tests${BROWSER} $@
+    #make sure all images are up to date
+    docker-compose pull acceptance-tests${BROWSER}
+    docker-compose run --rm -e HOST_USER_ID=${HOST_USER_ID} -e HOST_GROUP_ID=${HOST_GROUP_ID} acceptance-tests${BROWSER} $@
     docker stop $(docker ps -aq)
 done

@@ -13,7 +13,6 @@ services:
   #php-fpm server
   phpfpm-server:
     image: eventespresso/ee-codeception-base
-    user: accuser
     labels:
       com.eventespresso.service: "phpfpm-server"
       com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
@@ -21,17 +20,23 @@ services:
       - ./:/home/accuser/ee-codeception
       - ./docker/www:/home/accuser/www
       - ./docker/scripts/logs:/var/log/php7
+      - ./docker/scripts/common.sh:/home/accuser/common.sh
+      - ./docker/scripts/setup-user.sh:/home/accuser/setup-user.sh
+      - ./docker/scripts/setup-composer-and-wp.sh:/home/accuser/setup-composer-and-wp.sh
+      - ./docker/scripts/php-service-entry.sh:/home/accuser/php-entry.sh
+      - ./docker/scripts/acceptance-tests-entry.sh:/home/accuser/acceptance-tests-entry.sh
     links:
       - db-server
       - mailcatcher
     expose:
       - "9000"
-    command: ["php-fpm7", "-F"]
+
+    working_dir: /home/accuser
+    entrypoint: ["/home/accuser/php-entry.sh"]
 
   # Acceptance Test Variations
   acceptance-tests:
     image: eventespresso/ee-codeception-base
-    user: accuser
     labels:
       com.eventespresso.service: "acceptance-tests"
       com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
@@ -44,12 +49,11 @@ services:
       - mailcatcher
     environment:
       - BROWSER='chrome'
-    working_dir: /home/accuser/ee-codeception
-    entrypoint: ["/home/accuser/ee-codeception/do-tests.sh"]
+    working_dir: /home/accuser/
+    entrypoint: ["/home/accuser/acceptance-tests-entry.sh"]
 
   acceptance-tests-phantomjs:
     image: eventespresso/ee-codeception-base
-    user: accuser
     labels:
       com.eventespresso.service: "acceptance-tests"
       com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
@@ -62,12 +66,11 @@ services:
       - mailcatcher
     environment:
       - BROWSER=phantomjs
-    working_dir: /home/accuser/ee-codeception
-    entrypoint: ["/home/accuser/ee-codeception/do-tests.sh"]
+    working_dir: /home/accuser/
+    entrypoint: ["/home/accuser/acceptance-tests-entry.sh"]
 
   acceptance-tests-chrome:
     image: eventespresso/ee-codeception-base
-    user: accuser
     labels:
       com.eventespresso.service: "acceptance-tests"
       com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
@@ -80,12 +83,11 @@ services:
       - mailcatcher
     environment:
       - BROWSER=chrome
-    working_dir: /home/accuser/ee-codeception
-    entrypoint: ["/home/accuser/ee-codeception/do-tests.sh"]
+    working_dir: /home/accuser/
+    entrypoint: ["/home/accuser/acceptance-tests-entry.sh"]
 
   acceptance-tests-chrome-debug:
     image: eventespresso/ee-codeception-base
-    user: accuser
     labels:
       com.eventespresso.service: "acceptance-tests-debug"
       com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
@@ -98,12 +100,11 @@ services:
       - mailcatcher
     environment:
       - BROWSER=chromedebug
-    working_dir: /home/accuser/ee-codeception
-    entrypoint: ["/home/accuser/ee-codeception/do-tests.sh"]
+    working_dir: /home/accuser/
+    entrypoint: ["/home/accuser/acceptance-tests-entry.sh"]
 
   acceptance-tests-firefox:
     image: eventespresso/ee-codeception-base
-    user: accuser
     labels:
       com.eventespresso.service: "acceptance-tests"
       com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
@@ -116,12 +117,12 @@ services:
       - mailcatcher
     environment:
       - BROWSER=firefox
-    working_dir: /home/accuser/ee-codeception
-    entrypoint: ["/home/accuser/ee-codeception/do-tests.sh"]
+      - PHP_SERVICE_CMD="su - accuser -c './ee-codeception/do-tests.sh'"
+    working_dir: /home/accuser/
+    entrypoint: ["/home/accuser/acceptance-tests-entry.sh"]
 
   acceptance-tests-firefox-debug:
     image: eventespresso/ee-codeception-base
-    user: accuser
     labels:
       com.eventespresso.service: "acceptance-tests-debug"
       com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
@@ -134,8 +135,8 @@ services:
       - mailcatcher
     environment:
       - BROWSER=firefoxdebug
-    working_dir: /home/accuser/ee-codeception
-    entrypoint: ["/home/accuser/ee-codeception/do-tests.sh"]
+    working_dir: /home/accuser/
+    entrypoint: ["/home/accuser/acceptance-tests-entry.sh"]
 
   phantomjs-server:
     image: wernight/phantomjs
@@ -233,10 +234,12 @@ services:
     volumes:
       - ./docker/nginx/logs:/var/log/nginx
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/nginx/entry.sh:/home/accuser/nginx-entry.sh
     networks:
       default:
         aliases:
           - eecodeception.test
+    #entrypoint: "/home/accuser/nginx-entry.sh"
 
 networks:
   default:
