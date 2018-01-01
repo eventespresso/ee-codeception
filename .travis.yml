@@ -1,8 +1,6 @@
 sudo: required
 services:
   - docker
-cache:
-  apt: true
 before_script:
   - curl -sL https://raw.githubusercontent.com/travis-ci/artifacts/master/install | bash
 script:
