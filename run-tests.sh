@@ -63,11 +63,30 @@ if [ -z "$RUN_WITH" ]; then
     fi
 fi
 
+## Pass along any environment variables
+ENVIRONMENT_PASS_THRU="-e HOST_USER_ID=${HOST_USER_ID} -e HOST_GROUP_ID=${HOST_GROUP_ID}"
+EE_BRANCH=${EE_BRANCH-''}
+EE_TAG=${EE_TAG-''}
+ADDON_PACKAGE=${ADDON_PACKAGE-''}
+
+
+if [ -n ${EE_BRANCH} ]; then
+    ENVIRONMENT_PASS_THRU="${ENVIRONMENT_PASS_THRU} -e EE_BRANCH=${EE_BRANCH}"
+fi
+
+if [ -n ${EE_TAG} ]; then
+    ENVIRONMENT_PASS_THRU="${ENVIRONMENT_PASS_THRU} -e EE_TAG=${EE_TAG}"
+fi
+
+if [ -n ${ADDON_PACKAGE} ]; then
+    ENVIRONMENT_PASS_THRU="${ENVIRONMENT_PASS_THRU} -e ADDON_PACKAGE=${ADDON_PACKAGE}"
+fi
+
 for BROWSER in "${RUN_WITH}"
 do
     #make sure all images are up to date
     docker-compose pull acceptance-tests${BROWSER}
-    docker-compose run --rm -e HOST_USER_ID=${HOST_USER_ID} -e HOST_GROUP_ID=${HOST_GROUP_ID} acceptance-tests${BROWSER} $@
+    docker-compose run --rm ${ENVIRONMENT_PASS_THRU} acceptance-tests${BROWSER} $@
     if [ $? -eq 0 ]; then
         if [ "${REMOVE_CONTAINER}" -eq "1" ]; then
             echo "Remove Container: ${REMOVE_CONTAINER}"
