@@ -26,7 +26,7 @@ The only thing needed for setting this up for running tests locally is Docker an
 git clone https://github.com/eventespresso/ee-codeception.git
 ```
 #### 2. Execute `run-tests.sh` Script
-Make sure you are in the top level folder of this repo (the same level that `run-locally.sh` is found in) then execute this in your terminal/bash client.
+Make sure you are in the top level folder of this repo (the same level that `run-tests.sh` is found in) then execute this in your terminal/bash client.
 ```bash
 .run-tests.sh
 ```
