@@ -16,7 +16,7 @@ class BuildEETests extends Command implements CustomCommandInterface
 
     /**
      * Holds the config read from the yaml.
-     * @var bool
+     * @var array
      */
     protected $config = array();
 
@@ -117,7 +117,7 @@ class BuildEETests extends Command implements CustomCommandInterface
     protected function buildHelperTrait()
     {
         //if we have an addon config for helpers, then we just use that.
-        if (isset($this->config['addon'])) {
+        if (array_key_exists('addon', $this->config)) {
             $this->buildAddonHelperTraits();
         } else {
             $this->buildCoreHelperTraits();
@@ -130,11 +130,11 @@ class BuildEETests extends Command implements CustomCommandInterface
      */
     protected function buildAddonHelperTraits()
     {
-        if (! isset($this->config['addon'])) {
+        if (! array_key_exists('addon', $this->config)) {
             return;
         }
         $import_statements = $this->buildImportStatements($this->config['addon']);
-        if ($import_statements) {
+        if ($import_statements || $import_statements === '') {
             $this->writeHelperTemplateToFile(
                 'AddonAggregate',
                 $import_statements
@@ -160,12 +160,13 @@ class BuildEETests extends Command implements CustomCommandInterface
 
 
     /**
-     * @param $file_name_without_extension
-     * @param $template_arguments
+     * @param string $file_name_without_extension
+     * @param string $import_statements
+     * @throws \Symfony\Component\Filesystem\Exception\IOException
      */
     protected function writeHelperTemplateToFile($file_name_without_extension, $import_statements)
     {
-        $this->filesystem->dumpfile(
+        $this->filesystem->dumpFile(
             $this->project_path . 'src/helpers/' . $file_name_without_extension . '.php',
             $this->mustache->render(
                 file_get_contents(
