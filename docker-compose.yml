@@ -159,8 +159,6 @@ services:
       com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
     expose:
       - "4444"
-    environment:
-      - "SE_OPTS=-enablePassThrough false"
     links:
       - web-server
     shm_size: '2g'
@@ -174,8 +172,6 @@ services:
       - "4444"
     ports:
       - "5900:5900"
-    environment:
-      - "SE_OPTS=-enablePassThrough false"
     links:
       - web-server
     shm_size: '2g'
@@ -187,8 +183,6 @@ services:
       com.eventespresso.project: "${COMPOSE_PROJECT_NAME}"
     expose:
       - "4444"
-    environment:
-      - "SE_OPTS=-enablePassThrough false"
     links:
       - web-server
     shm_size: '2g'
@@ -202,8 +196,6 @@ services:
       - "4444"
     ports:
       - "5900:5900"
-    environment:
-      - "SE_OPTS=-enablePassThrough false"
     links:
       - web-server
     shm_size: '2g'
